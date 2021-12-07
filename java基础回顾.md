@@ -78,14 +78,76 @@ wait方法是Object类的方法，会释放资源，synchronize环境中调用
 ```java
 public class Main {
     public static void main(String args[]) {
+        /*
+        1.在创建了线程池后,等待提交过来的任务请求.
+		2.当调用execute()方法添加一个请求任务时,线程池就会做如下判断:
+ 		2.1 如果正在运行的线程数量小于corePoolSize,那么马上创建线程运行这个任务
+  		2.2 如果正在运行的线程数量大于或等于corePoolSize,那么将这个任务放入队列
+		2.3 如果这时候队列满了且正在运行的线程数量还小于maximumPoolSize,那么还是要创建非核心线程立刻运行这个任务
+		2.4 如果对队列满了且正在运行的线程数量大于或等于maximumPoolSize,那么线程池会启动饱和拒绝策略来执行
+		3.当一个线程完成任务时,它会从队列中取下一个任务来执行.
+		4.当一个线程无事可做超过一定的时间(keepAliveTime)时,线程池会判断:
+		4.1 如果当前运行的线程数大于corePoolSize,那么这个线程就会被停掉
+		4.2 所以线程池的所有任务完成后它最终会收缩到corePoolSize的大小
+        */
+        // 实质创建ThreadPoolExecutor对象
         Executors.newFixedThreadPool(5);
         Executors.newCachedThreadPool();
         Executors.newSingleThreadExecutor();
         Executors.newScheduledThreadPool(5);
-        // https://blog.csdn.net/qq_40093255/article/details/116990431
     }
 }
 ```
+
+| 方法                    | corePoolSize | maximumPoolSize   | keepAliveTime | workQueue           |
+| ----------------------- | ------------ | ----------------- | ------------- | ------------------- |
+| newFixedThreadPool      | nThreads     | nThreads          | 0             | LinkedBlockingQueue |
+| newCachedThreadPool     | 0            | Integer.MAX_VALUE | 60s           | SynchronousQueue    |
+| newSingleThreadExecutor | 1            | 1                 | 0             | LinkedBlockingQueue |
+| newScheduledThreadPool  | corePoolSize | Integer.MAX_VALUE | 0             | DelayedWorkQueue    |
+
+## 反射
+
+　　Java反射就是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；并且能改变它的属性
+
+```java
+package com.company;
+public class Main {
+    public static void main(String args[]) {
+        try {
+        Contact contact = new Contact();
+        Class c1 = contact.getClass();
+        Field field = c1.getDeclaredField("name");
+        field.setAccessible(true);
+        System.out.println(field.get(contact));
+        Class c2 = Contact.class;
+        field = c2.getDeclaredField("phone");
+        field.setAccessible(true);
+        System.out.println(field.get(contact));
+        Class c3 = Class.forName("com.company.Contact");
+        Object object = c3.newInstance();
+        System.out.println(c3.getMethod("formatByPhone").invoke(object));
+        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+}
+class Contact {
+    private String name = "jane";
+    private String phone = "17857745933";
+    public String formatByPhone() {
+        return "86" + phone;
+    }
+}
+```
+
+## 序列化
+
+简单说就是为了保存在内存中的各种对象的状态（也就是实例变量，不是方法），并且可以把保存的对象状态再读出来
+
+## 浅克隆/深克隆
+
+浅克隆就是创建新对象，但使用的属性和原来的是同一引用
 
 [ API ](https://www.matools.com/api/java8)
 
