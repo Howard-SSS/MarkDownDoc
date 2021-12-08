@@ -115,19 +115,18 @@ package com.company;
 public class Main {
     public static void main(String args[]) {
         try {
-        Contact contact = new Contact();
-        Class c1 = contact.getClass();
-        Field field = c1.getDeclaredField("name");
-        field.setAccessible(true);
-        System.out.println(field.get(contact));
-        Class c2 = Contact.class;
-        field = c2.getDeclaredField("phone");
-        field.setAccessible(true);
-        System.out.println(field.get(contact));
-        Class c3 = Class.forName("com.company.Contact");
-        Object object = c3.newInstance();
-        System.out.println(c3.getMethod("formatByPhone").invoke(object));
-        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            Object contact = new Contact();
+            Class c1 = contact.getClass();
+            Field field = c1.getDeclaredField("name");
+            field.setAccessible(true);
+            System.out.println(field.get(contact));
+            Class c2 = Contact.class;
+            field = c2.getDeclaredField("phone");
+            field.setAccessible(true);
+            System.out.println(field.get(contact));
+            Class c3 = Class.forName("com.company.Contact");
+            System.out.println(c3.getMethod("formatByPhone").invoke(contact));
+        } catch (ClassNotFoundException | NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
@@ -145,9 +144,149 @@ class Contact {
 
 简单说就是为了保存在内存中的各种对象的状态（也就是实例变量，不是方法），并且可以把保存的对象状态再读出来
 
+```java
+public class Main {
+    public static void main(String args[]) {
+        Person person1 = new Person();
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(out);
+            oos.writeObject(person1);
+            byte[] buffer = out.toByteArray();
+            InputStream in = new ByteArrayInputStream(buffer);
+            ObjectInputStream ois = new ObjectInputStream(in);
+            Person person2 = (Person)ois.readObject();
+            person2.show();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+class Person implements Serializable {
+    private int money = 199;
+    private String name = "jenny";
+    public void show() {
+        System.out.println("money: " + money + " name: " + name);
+    }
+}
+```
+
+
+
 ## 浅克隆/深克隆
 
-浅克隆就是创建新对象，但使用的属性和原来的是同一引用
+浅克隆就是对象是新的，基本数据类型使用新的，但引用类型是旧的
+
+```java
+public class Main {
+    public static void main(String args[]) {
+        Car car = new Car();
+        Person person1 = new Person();
+        person1.setCar(car);
+        person1.show();// money: 199 car: { number: 1234 }
+        Person person2 = (Person)person1.clone();
+        person1.setMoney(200);
+        car.setNumber("4321");
+        person2.show();// money: 199 car: { number: 4321 }
+        person1.show();// money: 200 car: { number: 4321 }
+    }
+}
+class Person implements Cloneable {
+    private int money = 199;
+    private Car car = null;
+    public void setMoney(int money) {
+        this.money = money;
+    }
+    public void setCar(Car car) {
+        this.car = car;
+    }
+    public Car getCar() {
+        return car;
+    }
+    public void show() {
+        System.out.println("money: " + money + " car: { " + car.show() + " }");
+    }
+    @Override
+    public Object clone() {
+        Person person = null;
+        try {
+            person = (Person)super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return person;
+    }
+}
+class Car {
+    private String number = "1234";
+    public void setNumber(String number) {
+        this.number = number;
+    }
+    public String show() {
+        return "number: " + number;
+    }
+}
+```
+
+深克隆
+
+```java
+public class Main {
+    public static void main(String args[]) {
+        Car car = new Car();
+        Person person1 = new Person();
+        person1.setCar(car);
+        person1.show();// money: 199 car: { number: 1234 }
+        Person person2 = (Person)person1.clone();
+        person1.setMoney(200);
+        car.setNumber("4321");
+        person2.show();// money: 199 car: { number: 1234 }
+        person1.show();// money: 200 car: { number: 4321 }
+    }
+}
+class Person implements Cloneable {
+    private int money = 199;
+    private Car car = null;
+    public void setMoney(int money) {
+        this.money = money;
+    }
+    public void setCar(Car car) {
+        this.car = car;
+    }
+    public Car getCar() {
+        return car;
+    }
+    public void show() {
+        System.out.println("money: " + money + " car: { " + car.show() + " }");
+    }
+    @Override
+    public Object clone() {
+        Person person = null;
+        try {
+            person = (Person)super.clone();
+            person.car = (Car)car.clone();
+        } catch (CloneNotSupportedException e) {}
+        return person;
+    }
+}
+class Car implements Cloneable {
+    private String number = "1234";
+    public void setNumber(String number) {
+        this.number = number;
+    }
+    public String show() {
+        return "number: " + number;
+    }
+    @Override
+    public Object clone() {
+        Car car = null;
+        try {
+            car = (Car)super.clone();
+        } catch (CloneNotSupportedException e) {}
+        return car;
+    }
+}
+```
 
 [ API ](https://www.matools.com/api/java8)
 
