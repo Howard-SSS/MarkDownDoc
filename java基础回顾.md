@@ -318,6 +318,104 @@ public class Main {
 }
 ```
 
+```java
+public class Main {
+    public static void main(String args[]) {
+        int[] array = {1,3,2,5,4,7,6,9,8};
+        SortImpl sort = new MergeSort();
+        sort.sort(array);
+        Arrays.stream(array).forEach(System.out::println);
+    }
+}
+interface SortImpl {
+    void sort(int[] array);
+    default void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+// 冒泡排序
+class BubbleSort implements SortImpl {
+    public void sort(int[] array) {
+        int length = array.length;
+        for(int i = 1;i < length; i++) {
+            boolean isFinish = true;
+            for(int j = 0;j < length - i;j++) {
+                if(array[j] > array[j + 1]) {
+                    swap(array, j,j + 1);
+                    isFinish = false;
+                }
+            }
+            if(isFinish) {
+                break ;
+            }
+        }
+    }
+}
+// 插入排序
+class InsertSort implements SortImpl {
+    public void sort(int[] array) {
+        int length = array.length;
+        for(int i = 1; i < length; i++) {
+            int temp = array[i];
+            int j = i;
+            while(j > 0 && temp < array[j - 1]) {
+                array[j] = array[j - 1];
+                j--;
+            }
+            if (j != i) {
+                array[j] = temp;
+            }
+        }
+    }
+}
+// 归并排序
+class MergeSort implements SortImpl {
+    public void sort(int[] array) {
+        sort(array, 0, array.length -1);
+    }
+    public void sort(int[] array, int start, int end) {
+        if(start >= end){
+            return;
+        }
+        int middle = (start + end) / 2;
+        sort(array, start, middle);
+        sort(array, middle + 1, end);
+        int left = start, right = middle + 1;
+        int[] tempArr = new int[end - start + 1];
+        int index = 0;
+        while(left <= middle && right <= end) {
+            tempArr[index++] = array[left] < array[right] ? array[left++] : array[right++];
+        }
+        while(left <= middle) {
+            tempArr[index++] = array[left++];
+        }
+        while(right <= end) {
+            tempArr[index++] = array[right++];
+        }
+        for(index = start; index <= end; index++) {
+            array[index] = tempArr[index - start];
+        }
+    }
+}
+```
+
+| 排序算法 | 平均时间复杂度 | 最好情况    | 最坏情况    | 空间复杂度 | 排序方式  | 稳定性 |
+| -------- | -------------- | ----------- | ----------- | ---------- | --------- | ------ |
+| 冒泡排序 | O(n^2^)        | O(n)        | O(n^2^)     | O(1)       | In-place  | 稳定   |
+| 选择排序 | O(n^2^)        | O(n^2^)     | O(n^2^)     | O(1)       | In-place  | 不稳定 |
+| 插入排序 | O(n^2^)        | O(n)        | O(n^2^)     | O(1)       | In-place  | 稳定   |
+| 希尔排序 | O(nlogn)       | O(nlog^2^n) | O(nlog^2^n) | O(1)       | In-place  | 不稳定 |
+| 归并排序 | O(nlogn)       | O(nlogn)    | O(nlogn)    | O(n)       | Out-place | 稳定   |
+| 快速排序 | O(nlogn)       | O(nlogn)    | O(n^2^)     | O(logn)    | In-place  | 不稳定 |
+| 堆排序   | O(nlogn)       | O(nlogn)    | O(nlogn)    | O(1)       | In-place  | 不稳定 |
+| 计数排序 | O(n+k)         | O(n+k)      | O(n+k)      | O(k)       | Out-place | 稳定   |
+| 桶排序   | O(n+k)         | O(n+k)      | O(n^2^)     | O(n+k)     | Out-place | 稳定   |
+| 基数排序 | O(n*k)         | O(n*k)      | O(n*k)      | O(n+k)     | Out-place | 稳定   |
+
+
+
 ## 容器
 
 ```java
