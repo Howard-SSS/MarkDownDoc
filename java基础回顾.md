@@ -2,6 +2,8 @@
 
 byte/boolean/char/short/int/float/long/double
 
+## 封装/继承/多态
+
 ## ==和equals
 
 ==对于基本类型比较的是值，对于引用类型比较的是引用是否相同
@@ -105,6 +107,10 @@ public class Main {
 | newCachedThreadPool     | 0            | Integer.MAX_VALUE | 60s           | SynchronousQueue    |
 | newSingleThreadExecutor | 1            | 1                 | 0             | LinkedBlockingQueue |
 | newScheduledThreadPool  | corePoolSize | Integer.MAX_VALUE | 0             | DelayedWorkQueue    |
+
+## 锁
+
+
 
 ## 反射
 
@@ -414,8 +420,6 @@ class MergeSort implements SortImpl {
 | 桶排序   | O(n+k)         | O(n+k)      | O(n^2^)     | O(n+k)     | Out-place | 稳定   |
 | 基数排序 | O(n*k)         | O(n*k)      | O(n*k)      | O(n+k)     | Out-place | 稳定   |
 
-
-
 ## 容器
 
 ```java
@@ -441,7 +445,8 @@ public class Main {
 ```java
 public class Main {
 	public static void main(String args[]) {
-        // 不同步、无序
+        // HashTable 线程安全
+        // 线程不安全、无序
         HashMap map = new HashMap<Integer, Integer>();
         map.put(1,1);//null [(1,1)]
         map.get(1);//1 [(1,1)]
@@ -480,6 +485,30 @@ public class Main {
     }
 }
 ```
+
+## 同步容器
+
+```java
+List<String> list = Collections.synchronizedList(new ArrayList<>());
+
+Map<Integer, String> map = Collections.synchronizedMap(new HashMap<>());
+
+Set<String> set = Collections.synchronizedSet(new HashSet<>());
+```
+
+CopyOnWriteArrayList
+
+写时在拷贝的数组上操作，完成后，拷贝数组替换旧数组，适用读多写少场景，读操作并不能马上看到写结果
+
+ConrurrentHashMap
+
+默认被细分为16个段，每一个段都是一个细粒度的HashMap，通过put(K key,V value)，会根据hashcode获得在哪一个段，对该段加锁，实现线程安全，同样size()会对每一个段加锁，等于对整个ConcurrentHashMap加锁，在求大小总和
+
+CopyOnWriteArraySet
+
+与CopyOnWriteArraySet类似
+
+**队列先放着**
 
 ## 1.8
 

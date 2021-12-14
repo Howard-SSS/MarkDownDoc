@@ -85,3 +85,11 @@ closure()
 
 总结: 当声明闭包的时候，捕获列表会创建一份car的copy,所以被捕获到的值是不会改变的，即使你改变car的值。
  如果你去掉闭包中的捕获列表，编译器会使用引用代替copy,在这种情况下，当闭包被调用时，变量的值是可以改变的.
+
+# Swift调用OC
+
+创建Swift-Bridge-Objective-C.h
+
+OC 用<u>#import "XXX.h"</u>导入
+
+swift 用<u>import XXX</u>导入
