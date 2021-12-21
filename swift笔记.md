@@ -6,15 +6,51 @@ present只能逐级返回,push能返回上一级,也可及返回到根vc,其他v
 
 https://www.raywenderlich.com/1000705-model-view-controller-mvc-in-ios-a-modern-approach
 
-![git-command](https://www.runoob.com/wp-content/uploads/2015/02/git-command.jpg)
+# ViewController生命周期
 
-git reset
+initWithCoder(类初始化)
 
-| 是否修改 | soft               | mixed              | hard               |
-| -------- | ------------------ | ------------------ | ------------------ |
-| 工作区   | :x:                | :x:                | :white_check_mark: |
-| 缓存区   | :x:                | :white_check_mark: | :white_check_mark: |
-| 版本去   | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+init(对象初始化)
+
+loadView
+
+viewDidLoad
+
+viewWillAppear
+
+viewWillLayoutSubviews
+
+viewDidLayoutSubviews
+
+viewDidAppear
+
+viewWillDisappear
+
+viewDidDisappear
+
+# View生命周期
+
+init
+
+didAddSubview
+
+willMoveToSuperview
+
+DidMoveToSuperview
+
+willMoveToWindow
+
+didMoveToWindow
+
+layoutSubviews
+
+drawRect
+
+removeFromSuperview
+
+dealloc
+
+willRemoveSubview
 
 # class、struct、enum区别
 
@@ -93,3 +129,24 @@ closure()
 OC 用<u>#import "XXX.h"</u>导入
 
 swift 用<u>import XXX</u>导入
+
+# 存储方式
+
+- NSUserDefaults
+- plist
+- SQLite3
+
+# 应用沙盒
+
+`Document:`适合存储重要的数据， iTunes同步应用时会同步该文件下的内容,（比如游戏中的存档）
+ `Library/Caches：`适合存储体积大，不需要备份的非重要数据，iTunes不会同步该文件
+ `Library/Preferences:`通常保存应用的设置信息, iTunes会同步
+ `tmp:`保存应用的临时文件，用完就删除，系统可能在应用没在运行时删除该目录下的文件，iTunes不会同步
+
+# RunLoop
+
+**保持程序持续运行**，程序一启动就会开一个主线程，主线程一开起来就会跑一个主线程对应的RunLoop,RunLoop保证主线程不会被销毁，也就保证了程序的持续运行
+
+**处理App中的各种事件**（比如：触摸事件，定时器事件，Selector事件等）
+
+**节省CPU资源，提高程序性能**，程序运行起来时，当什么操作都没有做的时候，RunLoop就告诉CUP，现在没有事情做，我要去休息，这时CUP就会将其资源释放出来去做其他的事情，当有事情做的时候RunLoop就会立马起来去做事情

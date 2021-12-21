@@ -92,7 +92,16 @@ public class Main {
 		4.1 如果当前运行的线程数大于corePoolSize,那么这个线程就会被停掉
 		4.2 所以线程池的所有任务完成后它最终会收缩到corePoolSize的大小
         */
-        // 实质创建ThreadPoolExecutor对象
+        /* 实质创建ThreadPoolExecutor对象
+        parameter:
+        	int corePoolSize 核心线程数
+        	int maximumPoolSize 最大线程数
+        	long keepAliveTime 无任务时线程存活时间
+        	TimeUnit unit 时间单位
+        	BlockingQueue<Runnable> workQueue 等待队列
+        	ThreadFactory threadFactory 线程创建器
+        	RejectedExecutionHandler handler 线程和队列都满时的策略
+        */
         Executors.newFixedThreadPool(5);
         Executors.newCachedThreadPool();
         Executors.newSingleThreadExecutor();
@@ -101,12 +110,12 @@ public class Main {
 }
 ```
 
-| 方法                    | corePoolSize | maximumPoolSize   | keepAliveTime | workQueue           |
-| ----------------------- | ------------ | ----------------- | ------------- | ------------------- |
-| newFixedThreadPool      | nThreads     | nThreads          | 0             | LinkedBlockingQueue |
-| newCachedThreadPool     | 0            | Integer.MAX_VALUE | 60s           | SynchronousQueue    |
-| newSingleThreadExecutor | 1            | 1                 | 0             | LinkedBlockingQueue |
-| newScheduledThreadPool  | corePoolSize | Integer.MAX_VALUE | 0             | DelayedWorkQueue    |
+| 方法                    | corePoolSize | maximumPoolSize   | keepAliveTime | workQueue                          |
+| ----------------------- | ------------ | ----------------- | ------------- | ---------------------------------- |
+| newFixedThreadPool      | nThreads     | nThreads          | 0             | LinkedBlockingQueue(无界)          |
+| newCachedThreadPool     | 0            | Integer.MAX_VALUE | 60s           | SynchronousQueue(阻塞直到可以交付) |
+| newSingleThreadExecutor | 1            | 1                 | 0             | LinkedBlockingQueue                |
+| newScheduledThreadPool  | corePoolSize | Integer.MAX_VALUE | 0             | DelayedWorkQueue(有界)             |
 
 ## 锁
 
@@ -534,7 +543,7 @@ CopyOnWriteArrayList
 
 写时在拷贝的数组上操作，完成后，拷贝数组替换旧数组，适用读多写少场景，读操作并不能马上看到写结果
 
-ConrurrentHashMap
+ConcurrentHashMap
 
 默认被细分为16个段，每一个段都是一个细粒度的HashMap，通过put(K key,V value)，会根据hashcode获得在哪一个段，对该段加锁，实现线程安全，同样size()会对每一个段加锁，等于对整个ConcurrentHashMap加锁，在求大小总和
 
@@ -543,6 +552,28 @@ CopyOnWriteArraySet
 与CopyOnWriteArraySet类似
 
 **队列先放着**
+
+## GC
+
+JVM把内存中所有对象之间引用关系看作一张图，通过一组名为“GC Root”的对象作为初始点，从这些点开始向下搜索，搜索所走过的路径称为引用链
+
+GC Root
+
+- 内存栈中的引用对象
+- 方法区中静态引用指向的对象
+- 仍处于存活状态中的线程对象
+- Native方法中JNI引用的对象
+
+触发时刻
+
+- 堆内存剩余空间不足导致对象内存分配失败，触发GC
+- 主动调用System.gc()请求GC
+
+回收算法
+
+- 标记清除算法(产生内存碎片)
+- 复制算法(可用大小缩为一半)
+- 压缩算法(需要局部对象移动)
 
 ## 1.8
 
@@ -619,7 +650,7 @@ public class Main {
 
 参数是基本类型，实际传递基本类型字面量的副本
 
-参数是对象，实际传递的是原始对象的副本地址
+参数是对象，实际传递的是原始对象的副本地址(副本保存原始对象地址)
 
 ## 
 
