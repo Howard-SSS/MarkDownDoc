@@ -4,6 +4,12 @@ byte/boolean/char/short/int/float/long/double
 
 ## 封装/继承/多态
 
+封装，即隐藏对象的属性和实现细节，仅对外公开接口，控制在程序中属性的读和修改的访问级别
+
+继承，是指可以让某个类型的对象获得另一个类型的对象的属性和方法
+
+多态，就是指一个类实例的相同方法在不同情形有不同表现形式
+
 ## ==和equals
 
 ==对于基本类型比较的是值，对于引用类型比较的是引用是否相同
@@ -549,7 +555,7 @@ ConcurrentHashMap
 
 CopyOnWriteArraySet
 
-与CopyOnWriteArraySet类似
+与CopyOnWriteArrayList类似
 
 **队列先放着**
 
