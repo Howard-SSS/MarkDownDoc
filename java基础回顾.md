@@ -545,15 +545,15 @@ Map<Integer, String> map = Collections.synchronizedMap(new HashMap<>());
 Set<String> set = Collections.synchronizedSet(new HashSet<>());
 ```
 
-CopyOnWriteArrayList
+**CopyOnWriteArrayList**
 
 写时在拷贝的数组上操作，完成后，拷贝数组替换旧数组，适用读多写少场景，读操作并不能马上看到写结果
 
-ConcurrentHashMap
+**ConcurrentHashMap**
 
 默认被细分为16个段，每一个段都是一个细粒度的HashMap，通过put(K key,V value)，会根据hashcode获得在哪一个段，对该段加锁，实现线程安全，同样size()会对每一个段加锁，等于对整个ConcurrentHashMap加锁，在求大小总和
 
-CopyOnWriteArraySet
+**CopyOnWriteArraySet**
 
 与CopyOnWriteArrayList类似
 

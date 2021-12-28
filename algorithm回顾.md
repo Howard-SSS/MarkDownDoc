@@ -2,7 +2,9 @@
 
 # 数组
 
-## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)
+## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>先比后存代表</u>
+
+
 
 ```java
 public int[] twoSum(int[] nums, int target) {
@@ -17,7 +19,7 @@ public int[] twoSum(int[] nums, int target) {
 }
 ```
 
-## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)
+## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>完成下标与检索下标代表</u>
 
 ```java
 public int removeDuplicates(int[] nums) {
@@ -50,20 +52,7 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 }
 ```
 
-## [121. 买卖股票的最佳时机 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)
-
-```java
-public int maxProfit(int[] prices) {
-    int res = 0, buy = prices[0];
-    for (int temp : prices) {
-        res = Math.max(res, temp - buy);
-        buy = Math.min(buy, temp);
-    }
-    return res;
-}
-```
-
-## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)
+## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)<u>对半消耗</u>
 
 ```java
 public int majorityElement(int[] nums) {
@@ -81,7 +70,7 @@ public int majorityElement(int[] nums) {
 }
 ```
 
-## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)
+## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)<u>异或取值</u>
 
 ```java
 public int missingNumber(int[] nums) {
@@ -111,6 +100,349 @@ public int pivotIndex(int[] nums) {
     return -1;
 }
 ```
+
+## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/submissions/)<u>求余缩减</u>
+
+```java
+public List<Boolean> prefixesDivBy5(int[] nums) {
+    List res = new ArrayList<Boolean>();
+    int temp = 0;
+    for (int num : nums) {
+        temp = (temp * 2 + num) % 5;
+        res.add(temp == 0);
+    }
+    return res;
+}
+```
+
+## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)
+
+```java
+public List<List<Integer>> permute(int[] nums) {
+    List<List<Integer>> res = new ArrayList<>();
+    dfs(res, nums, 0);
+    return res;
+}
+public void dfs(List res,int[] nums, int index) {
+    if (index == nums.length) {
+        ArrayList<Integer> l=new ArrayList<>();
+        for (int a:nums)
+            l.add(a);
+        res.add(l);
+    }
+    for (int i = index; i < nums.length; i++) {
+        swap(nums, index, i);
+        dfs(res, nums, index + 1);
+        swap(nums, index, i);
+    }
+}
+public void swap(int[] nums,int a,int b) {
+    int temp = nums[a];
+    nums[a] = nums[b];
+    nums[b] = temp;
+}
+```
+
+## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)
+
+```java
+public void sortColors(int[] nums) {
+    int left = 0, right = nums.length - 1;
+    for (int i = 0; i <= right; i++) {
+        if (nums[i] == 2) {
+            swap(nums, i, right);
+            right--;
+            i--;
+        } else if (nums[i] == 0) {
+            swap(nums, i, left);
+            left++;
+        }
+    }
+}
+public void swap(int nums[], int a, int b) {
+    int temp = nums[a];
+    nums[a] = nums[b];
+    nums[b]= temp;
+}
+```
+
+## [134. 加油站 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/gas-station/submissions/)<u>奇技淫巧</u>
+
+```java
+public int canCompleteCircuit(int[] gas, int[] cost) {
+    int res, sum, yu;
+    res = sum = yu = 0;
+    for (int i = 0; i < gas.length; i++) {
+        sum = sum + gas[i] - cost[i];
+        yu = yu + gas[i] - cost[i];
+        if (yu < 0) {
+            yu = 0;
+            res = i + 1;
+        }
+    }
+    if (sum < 0) 
+        return -1;
+    return res;
+}
+```
+
+## [189. 轮转数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/rotate-array/)
+
+```java
+public void rotate(int[] nums, int k) {
+    k = k % nums.length;
+    reverse(nums, 0, k);
+    reverse(nums, k + 1, nums.length - 1);
+    reverse(nums, 0, nums.length - 1);
+}
+public void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+        int temp = nums[start];
+        nums[start] = nums[end];
+        nums[end] = temp;
+        start += 1;
+        end -= 1;
+    }
+}
+```
+
+# 链表
+
+## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)<u>总会步长相等</u>
+
+```java
+public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+    if (headA == null || headB == null)
+        return null;
+    ListNode a = headA, b = headB;
+    while (a != b) {
+        a = a == null ? headB : a.next;
+        b = b == null ? headA : b.next;
+    }
+    return a;
+}
+```
+
+## [206. 反转链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reverse-linked-list/submissions/)
+
+```java
+public ListNode reverseList(ListNode head) {
+    if(head == null)
+        return null;
+    ListNode myHead = head;
+    ListNode p = head.next;
+    head.next = null;
+    while(p != null) {
+        ListNode last = p;
+        p = p.next;
+        last.next = myHead;
+        myHead = last;
+    }
+    return myHead;
+}
+```
+
+## [142. 环形链表 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/linked-list-cycle-ii/)<u>一步与两步</u>
+
+```java
+public ListNode detectCycle(ListNode head) {
+    if(head == null || head.next == null)
+        return null;
+    ListNode slow = head.next, fast = slow.next;
+    while(slow != fast) {
+        if(fast == null || fast.next == null)
+            return null;
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    while(slow != head) {
+        slow = slow.next;
+        head = head.next;
+    }
+    return head;
+}
+```
+
+# 深度优先遍历
+
+## [104. 二叉树的最大深度 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
+
+```java
+public int maxDepth(TreeNode root) {
+    if(root == null)
+        return 0;
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+}
+```
+
+## [543. 二叉树的直径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+
+```java
+int max = 0;
+public int diameterOfBinaryTree(TreeNode root) {
+    help(root);
+    return max;
+}
+public int help(TreeNode root) {
+    if (root == null) 
+        return 0;
+    int left = help(root.left), right = help(root.right);
+    max = Math.max(max, left + right);
+    return Math.max(left, right) + 1;
+}
+```
+
+## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>适合就转身</u>
+
+```java
+public int numIslands(char[][] grid) {
+    int r=grid.length;
+    if(r==0)
+        return 0;
+    int c=grid[0].length,res=0;
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            if(grid[i][j]=='1'){
+                tran(grid,i,j);
+                res++;
+            } 
+        }
+    }
+    return res;
+}
+public void tran(char[][] grid,int i,int j){
+    int r=grid.length,c=grid[0].length;
+    if(i>=r||i<0||j>=c||j<0||grid[i][j]=='0')
+        return ;
+    grid[i][j]='0';
+    tran(grid,i+1,j);
+    tran(grid,i-1,j);
+    tran(grid,i,j+1);
+    tran(grid,i,j-1);
+}
+```
+
+# 广度优先遍历
+
+## [102. 二叉树的层序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
+
+```java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    List<List<Integer>> list = new ArrayList<>();
+    Queue<TreeNode> queue = new ArrayDeque<>();
+    if (root != null)
+        queue.offer(root);
+    while (!queue.isEmpty()) {
+        int size = queue.size();
+        List<Integer> temp = new ArrayList<>();
+        while (size-- > 0) {
+            TreeNode node = queue.poll();
+            if (node.left != null)
+                queue.offer(node.left);
+            if (node.right != null)
+                queue.offer(node.right);
+            temp.add(node.val);
+        }
+        list.add(temp);
+    }
+    return list;
+}
+```
+
+# 数学
+
+## [509. 斐波那契数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/fibonacci-number/submissions/)
+
+```java
+public int fib(int n) {
+    double sq5 = Math.sqrt(5);
+    double f1 = Math.pow((1 + sq5) / 2, n) - Math.pow((1 - sq5) / 2, n);
+    return (int)(f1 / sq5);
+}
+```
+
+## [172. 阶乘后的零 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/factorial-trailing-zeroes/)
+
+```java
+public int trailingZeroes(int n) {
+    int res = 0;
+    for (int i = 5; i <= n; i += 5) {
+        int temp = i;
+        while(temp % 5 == 0) {
+            temp /= 5;
+            res++;
+        }
+    }
+    return res;
+}
+```
+
+```java
+public int trailingZeroes(int n) {
+    int res = 0;
+    long mut = 5;
+    while (n >= mut) {
+        res += n / mut;
+        mut *= 5;
+    }
+    return res;
+}
+```
+
+## [231. 2 的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-two/)<u>以位定值</u>
+
+```java
+public boolean isPowerOfTwo(int n) {
+    return n > 0 && (n & (n - 1)) == 0;
+}
+```
+
+## [326. 3 的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-three/submissions/)
+
+```java
+public boolean isPowerOfThree(int n) {
+    return n > 0 && 1162261467 % n == 0;
+}
+```
+
+## [342. 4的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-four/)<u>以为定值</u>
+
+```java
+public boolean isPowerOfFour(int n) {
+    return n > 0 && (n & (n - 1)) == 0 && (n & 0xaaaaaaaa) == 0;
+}
+```
+
+# 位运算
+
+## [191. 位1的个数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-1-bits/submissions/)位与消1
+
+```java
+public int hammingWeight(int n) {
+    int res = 0;
+    while (n != 0) {
+        n = n & (n - 1);
+        res++;
+    }
+    return res;
+}
+```
+
+## [201. 数字范围按位与 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/submissions/)总结代表
+
+```java
+public int rangeBitwiseAnd(int left, int right) {
+    int shift = 0;
+    while (left != right) {
+        left >>= 1;
+        right >>= 1;
+        shift++;
+    }
+    return left << shift;
+}
+```
+
+# 设计
 
 ## [705. 设计哈希集合 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/design-hashset/submissions/)
 
@@ -227,47 +559,183 @@ class MyHashMap {
 }
 ```
 
-## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/submissions/)
+## [622. 设计循环队列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/design-circular-queue/submissions/)
 
 ```java
-public List<Boolean> prefixesDivBy5(int[] nums) {
-    List res = new ArrayList<Boolean>();
-    int temp = 0;
-    for (int num : nums) {
-        temp = (temp * 2 + num) % 5;
-        res.add(temp == 0);
+class MyCircularQueue {
+    private int[] array;
+    private int head;// 指向的下个单元是第一个
+    private int tail;// 指向的单元是最后一个
+    public MyCircularQueue(int k) {
+        array = new int[k + 1];
+        head = tail = 0;
     }
-    return res;
+    public boolean enQueue(int value) {
+        if (isFull())
+            return false;
+        tail = (tail + 1) % array.length;
+        array[tail] = value;
+        return true;
+    }
+    public boolean deQueue() {
+        if (isEmpty())
+            return false;
+        head = (head + 1) % array.length;
+        return true;
+    }
+    public int Front() {
+        if (isEmpty())
+            return -1;
+        return array[(head + 1) % array.length];
+    }
+    public int Rear() {
+        if (isEmpty())
+            return -1;
+        return array[tail];
+    }
+    public boolean isEmpty() {
+        return head == tail;
+    }
+    public boolean isFull() {
+        return (tail + 1) % array.length == head;
+    }
 }
 ```
 
-## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)
+## [707. 设计链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/design-linked-list/)
 
 ```java
-public List<List<Integer>> permute(int[] nums) {
-    List<List<Integer>> res = new ArrayList<>();
-    dfs(res, nums, 0);
-    return res;
-}
-public void dfs(List res,int[] nums, int index) {
-    if (index == nums.length) {
-        ArrayList<Integer> l=new ArrayList<>();
-        for (int a:nums)
-            l.add(a);
-        res.add(l);
+class MyLinkedList {
+    private class ListNode {
+        int val;
+        ListNode next;
+        public ListNode(int val) {
+            this.val = val;
+        }
     }
-    for (int i = index; i < nums.length; i++) {
-        swap(nums, index, i);
-        dfs(res, nums, index + 1);
-        swap(nums, index, i);
+    private ListNode head;
+    public MyLinkedList() { 
+        head = new ListNode(-1);
     }
-}
-public void swap(int[] nums,int a,int b) {
-    int temp = nums[a];
-    nums[a] = nums[b];
-    nums[b] = temp;
+    public int get(int index) {
+        if (index < 0) 
+            return -1;
+        ListNode node = head;
+        while (index-- != 0) {
+            if (node.next == null)
+                return -1;
+            node = node.next;
+        }
+        if (node.next == null)
+            return -1;
+        return node.next.val;
+    }
+    public void addAtHead(int val) {
+        ListNode newHead = new ListNode(val);
+        newHead.next = head.next;
+        head.next = newHead;
+    }
+    public void addAtTail(int val) {
+        ListNode newTail = new ListNode(val);
+        ListNode node = head;
+        while (node.next != null) 
+            node = node.next;
+        node.next = newTail;
+    }
+    public void addAtIndex(int index, int val) {
+        if (index < 0)
+            index = 0;
+        ListNode newNode = new ListNode(val);
+        ListNode node = head;
+        while (index-- != 0) {
+            if (node.next == null)
+                return;
+            node = node.next;
+        }
+        newNode.next = node.next;
+        node.next = newNode;
+    }
+    public void deleteAtIndex(int index) {
+        if (index < 0)
+            return;
+        ListNode node = head;
+        while (index-- != 0) {
+            if (node.next == null)
+                return;
+            node = node.next;
+        }
+        if (node.next != null)
+            node.next = node.next.next;
+    }
 }
 ```
+
+## [641. 设计循环双端队列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/design-circular-deque/)
+
+```java
+class MyCircularDeque {
+    private int[] array;
+    private int head;
+    private int tail;
+    public MyCircularDeque(int k) {
+        array = new int[k + 1];
+        head = tail = 0;
+    }
+    // 先移后放
+    public boolean insertFront(int value) {
+        if (isFull())
+            return false;
+        head--;
+        if (head == -1)
+            head = array.length - 1;
+        array[head] = value;
+        return true;
+    }
+    // 先放后移
+    public boolean insertLast(int value) {
+        if (isFull())
+            return false;
+        array[tail] = value;
+        tail = (tail + 1) % array.length;
+        return true;
+    }
+    public boolean deleteFront() {
+        if (isEmpty())
+            return false;
+        head = (head + 1) % array.length;
+        return true;
+    }
+    public boolean deleteLast() {
+        if (isEmpty())
+            return false;
+        tail--;
+        if (tail == -1) 
+            tail = array.length - 1;
+        return true;
+    }
+    public int getFront() {
+        if (isEmpty())
+            return -1;
+        return array[head];
+    }
+    public int getRear() {
+        if (isEmpty())
+            return -1;
+        int temp = tail - 1;
+        if (temp == -1)
+            temp = array.length - 1;
+        return array[temp];
+    }
+    public boolean isEmpty() {
+        return head == tail;
+    }
+    public boolean isFull() {
+        return (tail + 1) % array.length == head;
+    }
+}
+```
+
+# 动态规划
 
 ## [55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)
 
@@ -286,219 +754,63 @@ public boolean canJump(int[] nums) {
 }
 ```
 
-## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)
+## [121. 买卖股票的最佳时机 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)<u>有小取小，终会遇到大</u>
 
 ```java
-public void sortColors(int[] nums) {
-    int left = 0, right = nums.length - 1;
-    for (int i = 0; i <= right; i++) {
-        if (nums[i] == 2) {
-            swap(nums, i, right);
-            right--;
-            i--;
-        } else if (nums[i] == 0) {
-            swap(nums, i, left);
-            left++;
-        }
+public int maxProfit(int[] prices) {
+    int res = 0, buy = prices[0];
+    for (int temp : prices) {
+        res = Math.max(res, temp - buy);
+        buy = Math.min(buy, temp);
     }
-}
-public void swap(int nums[], int a, int b) {
-    int temp = nums[a];
-    nums[a] = nums[b];
-    nums[b]= temp;
-}
-```
-
-## [134. 加油站 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/gas-station/submissions/)
-
-奇技淫巧
-
-```java
-public int canCompleteCircuit(int[] gas, int[] cost) {
-    int res, sum, yu;
-    res = sum = yu = 0;
-    for (int i = 0; i < gas.length; i++) {
-        sum = sum + gas[i] - cost[i];
-        yu = yu + gas[i] - cost[i];
-        if (yu < 0) {
-            yu = 0;
-            res = i + 1;
-        }
-    }
-    if (sum < 0) 
-        return -1;
     return res;
 }
 ```
 
-## [189. 轮转数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/rotate-array/)
+## [198. 打家劫舍 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/house-robber/)<u>近水楼台先报警</u>
 
 ```java
-public void rotate(int[] nums, int k) {
-    k = k % nums.length;
-    reverse(nums, 0, k);
-    reverse(nums, k + 1, nums.length - 1);
-    reverse(nums, 0, nums.length - 1);
-}
-public void reverse(int[] nums, int start, int end) {
-    while (start < end) {
-        int temp = nums[start];
-        nums[start] = nums[end];
-        nums[end] = temp;
-        start += 1;
-        end -= 1;
+public int rob(int[] nums) {
+    if (nums.length == 1)
+        return nums[0];
+    else if (nums.length == 2)
+        return Math.max(nums[0], nums[1]);
+    else if (nums.length == 3)
+        return Math.max(nums[1], nums[0] + nums[2]);
+    nums[2] += nums[0];
+    int max = Math.max(nums[1], nums[2]);
+    for(int i = 3; i < nums.length; i++) {
+        nums[i] += Math.max(nums[i - 2], nums[i - 3]);
+        max = Math.max(max, nums[i]);
     }
-}
-```
-
-# 链表
-
-## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)
-
-```java
-public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-    if (headA == null || headB == null)
-        return null;
-    ListNode a = headA, b = headB;
-    while (a != b) {
-        a = a == null ? headB : a.next;
-        b = b == null ? headA : b.next;
-    }
-    return a;
-}
-```
-
-## [206. 反转链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reverse-linked-list/submissions/)
-
-```java
-public ListNode reverseList(ListNode head) {
-    if(head == null)
-        return null;
-    ListNode myHead = head;
-    ListNode p = head.next;
-    head.next = null;
-    while(p != null) {
-        ListNode last = p;
-        p = p.next;
-        last.next = myHead;
-        myHead = last;
-    }
-    return myHead;
-}
-```
-
-## [142. 环形链表 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
-
-```java
-public ListNode detectCycle(ListNode head) {
-    if(head == null || head.next == null)
-        return null;
-    ListNode slow = head.next, fast = slow.next;
-    while(slow != fast) {
-        if(fast == null || fast.next == null)
-            return null;
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-    while(slow != head) {
-        slow = slow.next;
-        head = head.next;
-    }
-    return head;
-}
-```
-
-# 深度优先遍历
-
-## [104. 二叉树的最大深度 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
-
-```java
-public int maxDepth(TreeNode root) {
-    if(root == null)
-        return 0;
-    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
-}
-```
-
-## [543. 二叉树的直径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
-
-```java
-int max = 0;
-public int diameterOfBinaryTree(TreeNode root) {
-    help(root);
     return max;
 }
-public int help(TreeNode root) {
-    if (root == null) 
-        return 0;
-    int left = help(root.left), right = help(root.right);
-    max = Math.max(max, left + right);
-    return Math.max(left, right) + 1;
-}
 ```
 
-## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)
+# 回溯
+
+## [39. 组合总和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/combination-sum/submissions/)<u>选与不选</u>
 
 ```java
-public int numIslands(char[][] grid) {
-    int r=grid.length;
-    if(r==0)
-        return 0;
-    int c=grid[0].length,res=0;
-    for(int i=0;i<r;i++){
-        for(int j=0;j<c;j++){
-            if(grid[i][j]=='1'){
-                tran(grid,i,j);
-                res++;
-            } 
-        }
-    }
+public List<List<Integer>> combinationSum(int[] candidates, int target) {
+    List<List<Integer>> res = new ArrayList<>();
+    Stack<Integer> temp = new Stack<>();
+    help(res, candidates, target, temp, 0);
     return res;
 }
-public void tran(char[][] grid,int i,int j){
-    int r=grid.length,c=grid[0].length;
-    if(i>=r||i<0||j>=c||j<0||grid[i][j]=='0')
-        return ;
-    grid[i][j]='0';
-    tran(grid,i+1,j);
-    tran(grid,i-1,j);
-    tran(grid,i,j+1);
-    tran(grid,i,j-1);
-}
-```
-
-# 广度优先遍历
-
-## [102. 二叉树的层序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
-
-```java
-public List<List<Integer>> levelOrder(TreeNode root) {
-    List<List<Integer>> list = new ArrayList<>();
-    Queue<TreeNode> queue = new ArrayDeque<>();
-    if (root != null)
-        queue.offer(root);
-    while (!queue.isEmpty()) {
-        int size = queue.size();
-        List<Integer> temp = new ArrayList<>();
-        while (size-- > 0) {
-            TreeNode node = queue.poll();
-            if (node.left != null)
-                queue.offer(node.left);
-            if (node.right != null)
-                queue.offer(node.right);
-            temp.add(node.val);
-        }
-        list.add(temp);
+private void help(List<List<Integer>> res, int[] array, int target, Stack<Integer> temp, int index) {
+    if (index >= array.length)
+        return;
+    else if (target == 0) {
+        res.add(new ArrayList<>(temp));
+        return;
     }
-    return list;
+    help(res, array, target, temp, index + 1);
+    if (target - array[index] >= 0) {
+        temp.push(array[index]);
+        help(res, array, target - array[index], temp, index);
+        temp.pop();
+    }
 }
-```
-
-# 数学
-
-## [50. Pow(x, n) - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/powx-n/)
-
-```
-
 ```
 
