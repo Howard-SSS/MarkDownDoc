@@ -442,6 +442,18 @@ public int rangeBitwiseAnd(int left, int right) {
 }
 ```
 
+## [面试题 16.07. 最大数值 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/maximum-lcci/)
+
+```java
+public int maximum(int a, int b) {
+    long q = a;
+    long p = b;
+    return (int)(((q + p) + Math.abs(q - p)) / 2);
+}
+```
+
+
+
 # 设计
 
 ## [705. 设计哈希集合 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/design-hashset/submissions/)
@@ -735,6 +747,60 @@ class MyCircularDeque {
 }
 ```
 
+## [面试题 03.04. 化栈为队 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/implement-queue-using-stacks-lcci/)<u>双栈做队列</u>
+
+```java
+class MyQueue {
+    Stack<Integer> pushStack, pollStack;
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        pushStack = new Stack<Integer>();
+        pollStack = new Stack<Integer>();
+    }
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        pushStack.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        if (pollStack.isEmpty()) {
+            while (!pushStack.isEmpty()) {
+                pollStack.push(pushStack.pop());
+            }
+        }
+        return pollStack.pop();
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        if (pollStack.isEmpty()) {
+            while (!pushStack.isEmpty()) {
+                pollStack.push(pushStack.pop());
+            }
+        }
+        return pollStack.peek();
+    }
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return pushStack.isEmpty() && pollStack.isEmpty();
+    }
+}
+
+/**
+ * Your MyQueue object will be instantiated and called as such:
+ * MyQueue obj = new MyQueue();
+ * obj.push(x);
+ * int param_2 = obj.pop();
+ * int param_3 = obj.peek();
+ * boolean param_4 = obj.empty();
+ */
+```
+
+
+
 # 动态规划
 
 ## [55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)
@@ -811,6 +877,73 @@ private void help(List<List<Integer>> res, int[] array, int target, Stack<Intege
         help(res, array, target - array[index], temp, index);
         temp.pop();
     }
+}
+```
+
+# 单调栈
+
+## [739. 每日温度 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/daily-temperatures/)<u>找最近</u>
+
+```java
+public int[] dailyTemperatures(int[] T) {
+    int[] res = new int[T.length];
+    Stack<Integer> stack = new Stack();
+    stack.push(0);
+    for (int i = 1; i < T.length; i++) {
+        while (!stack.isEmpty() && T[i] > T[stack.peek()]) {
+            int index = stack.pop();
+            res[index] = i - index;
+        }
+        stack.push(i);
+    }
+    while (!stack.isEmpty()) {
+        res[stack.pop()] = 0;
+    }
+    return res;
+}
+```
+
+## [962. 最大宽度坡 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/maximum-width-ramp/)<u>找最远</u>
+
+```java
+public int maxWidthRamp(int[] nums) {
+    Stack<Integer> stack = new Stack<>();
+    int max = 0;
+    stack.push(0);
+    for (int i = 1; i < nums.length; i++) {
+        if (nums[i] < nums[stack.peek()])
+            stack.push(i);
+    }
+    for (int i = nums.length - 1; i >= 0; i--) {
+        while (!stack.isEmpty() && stack.peek() >= i) {
+            stack.pop();
+        }
+        while (!stack.isEmpty() && nums[i] >= nums[stack.peek()]) {
+            max = Math.max(max, i - stack.pop());
+        }
+        if (stack.isEmpty())
+            break;
+    }
+    return max;
+}
+```
+
+# 二分查找
+
+## [35. 搜索插入位置 题解 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/search-insert-position/solution/)<u>二分变种</u>
+
+```java
+public int searchInsert(int[] nums, int target) {
+    int left = 0, right = nums.length - 1, mid = -1;
+    while (left <= right) {
+        mid = (left + right) / 2;
+        if (nums[mid] >= target) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return left;
 }
 ```
 

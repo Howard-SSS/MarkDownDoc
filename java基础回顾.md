@@ -14,7 +14,7 @@ byte/boolean/char/short/int/float/long/double
 
 ==对于基本类型比较的是值，对于引用类型比较的是引用是否相同
 
-String和Integer重写了equals方法，比较的是值
+equals方法里用的是==比较，但String和Integer重写了equals方法，比较的是值
 
 ## StringBuffer和StringBuilder
 
@@ -225,8 +225,6 @@ class Person implements Serializable {
     }
 }
 ```
-
-
 
 ## 浅克隆/深克隆
 
@@ -580,6 +578,16 @@ GC Root
 - 标记清除算法(产生内存碎片)
 - 复制算法(可用大小缩为一半)
 - 压缩算法(需要局部对象移动)
+
+## 日志
+
+级别
+
+- trace
+- debug
+- info
+- warn
+- error
 
 ## 1.8
 
