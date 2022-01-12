@@ -136,3 +136,104 @@ slf4j-api
 | jcl-over-slf4j.jar | jcl(门面)适配器 |
 | jul-to-slf4j.jar   | jul(实现)适配器 |
 
+# 自动配置
+
+#### 视图解析
+
+ContentNegotiatingViewResolver不会解析视图、而是委派给其他视图解析器进行解析
+
+ViewResolver是SpringMVC内置的视图解析器
+
+```java
+public class ContentNegotiatingViewResolver extends WebApplicationObjectSupport implements ViewResolver, Ordered, InitializingBean{
+    // 视图解析器列表
+    @Nullable
+	private List<ViewResolver> viewResolvers;
+    // 扫描所有Bean初始视图解析器列表
+    @Override
+	protected void initServletContext(ServletContext servletContext) { ... }
+	...
+    // 根据返回视图的名称解析视图
+    @Override
+	@Nullable
+	public View resolveViewName(String viewName, Locale locale) throws Exception {
+        ...
+        // 获得所有匹配的视图
+        List<View> candidateViews = getCandidateViews(viewName, locale, requestedMediaTypes);
+        // 获取最终那个
+        View bestView = getBestView(candidateViews, requestedMediaTypes, attrs);
+        if (bestView != null) {
+            return bestView;
+        }
+    	...
+	}
+}
+```
+
+```java
+public interface ViewResolver {
+    @Nullable
+    View resolveViewName(String var1, Locale var2) throws Exception;
+}
+```
+
+BeanNameViewResolver会根据handler方法返回的视图名称，去ioc容器中找到实现View接口并且同名的Bean
+
+```java
+@Controller
+@RequestMapping("/test")
+public class Controller {
+	@GetMapping("abc")
+	public String to() {
+		return "xyz";
+	} 
+}
+```
+
+```java
+@Component
+class Xyz implements View {
+    @Override
+    public String getContentType() {
+        return "text/html";
+    }
+    @Override
+    public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.getWriter().print("Welcome to");
+    }
+}
+```
+
+#### 提供静态资源访问
+
+条件：放在指定位置
+
+```java
+public class WebMvcAutoConfiguration {
+	@Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        ...
+       	if (!registry.hasMappingForPattern("/webjars/**")) {
+            // 访问/webjars/**时会去classpath:/META-INF/resources/webjars/**进行映射
+            customizeResourceHandlerRegistration(registry.addResourceHandler("/webjars/**")
+            .addResourceLocations("classpath:/META-INF/resources/webjars/")
+            .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl)
+            .setUseLastModified(this.resourceProperties.getCache().isUseLastModified()));
+        }
+        String staticPathPattern = this.mvcProperties.getStaticPathPattern();
+        if (!registry.hasMappingForPattern(staticPathPattern)) {
+            // 获得静态资源地址{"classpath:/META-INF/resources/","classpath:/resources/","classpath:/static/","classpath:/public/"}， 在地址里比对
+            customizeResourceHandlerRegistration(registry.addResourceHandler(staticPathPattern)
+            .addResourceLocations(getResourceLocations(this.resourceProperties.getStaticLocations()))
+            .setCachePeriod(getSeconds(cachePeriod)).setCacheControl(cacheControl)
+            .setUseLastModified(this.resourceProperties.getCache().isUseLastModified()));
+        }
+    }
+}
+```
+
+#### 格式转换
+
+#### HttpMessageConverters
+
+负责http请求和响应的报文处理

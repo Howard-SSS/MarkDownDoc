@@ -2,24 +2,7 @@
 
 # 数组
 
-## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>先比后存代表</u>
-
-
-
-```java
-public int[] twoSum(int[] nums, int target) {
-    HashMap<Integer,Integer> map = new HashMap<>();
-    for (int i = 0; i < nums.length; i++) {
-        if (map.containsKey(target - nums[i])) {
-            return new int[]{map.get(target - nums[i]), i};
-        }
-        map.put(nums[i], i);
-    }
-    return new int[]{};
-}
-```
-
-## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>完成下标与检索下标代表</u>
+## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>完成下标与检索下标</u>
 
 ```java
 public int removeDuplicates(int[] nums) {
@@ -206,6 +189,24 @@ public void reverse(int[] nums, int start, int end) {
 }
 ```
 
+# 字符串
+
+## [387. 字符串中的第一个唯一字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/first-unique-character-in-a-string/)<u>化简</u>
+
+```java
+public int firstUniqChar(String s) {
+    int min = Integer.MAX_VALUE;
+    for (int i = 'a'; i <= 'z'; i++) {
+        int f = s.indexOf(i);
+        if (f == -1)
+            continue;
+        if (f == s.lastIndexOf(i))
+            min = Math.min(min, f);
+    }
+    return min == Integer.MAX_VALUE ? -1 : min;
+}
+```
+
 # 链表
 
 ## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)<u>总会步长相等</u>
@@ -292,7 +293,7 @@ public int help(TreeNode root) {
 }
 ```
 
-## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>适合就转身</u>
+## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>向下抹除广度</u>
 
 ```java
 public int numIslands(char[][] grid) {
@@ -322,6 +323,30 @@ public void tran(char[][] grid,int i,int j){
 }
 ```
 
+## [695. 岛屿的最大面积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/max-area-of-island/)<u>向上计数广度</u>
+
+```java
+public int maxAreaOfIsland(int[][] grid) {
+    int max = 0;
+    for (int i = 0; i < grid.length; i++) {
+        for (int j = 0; j < grid[0].length; j++)
+            if (grid[i][j] == 1)
+                max = Math.max(max, dfs(grid, i, j));
+    }
+    return max;
+}
+private int dfs(int[][] grid, int r, int c) {
+    if (r < 0 || c < 0 || r == grid.length || c == grid[0].length || grid[r][c] != 1)
+        return 0;
+    grid[r][c] = 0;
+    return 
+        dfs(grid, r + 1, c) +
+        dfs(grid, r - 1, c) + 
+        dfs(grid, r, c + 1) + 
+        dfs(grid, r, c - 1) + 1;
+}
+```
+
 # 广度优先遍历
 
 ## [102. 二叉树的层序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-level-order-traversal/)
@@ -346,6 +371,41 @@ public List<List<Integer>> levelOrder(TreeNode root) {
         list.add(temp);
     }
     return list;
+}
+```
+
+## [542. 01 矩阵 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/01-matrix/)<u>蔓延</u>
+
+```java
+public int[][] updateMatrix(int[][] mat) {
+    int[][] arr = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    int r = mat.length;
+    if (r == 0)
+        return mat;
+    int c = mat[0].length;
+    if (c == 0)
+        return mat;
+    ArrayDeque<Integer> queue = new ArrayDeque<>();
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            if (mat[i][j] == 0)
+                queue.offerLast(i * c + j);
+            else
+                mat[i][j] = -1;
+        }
+    }
+    while (!queue.isEmpty()) {
+        int code = queue.pollFirst();
+        int i = code / c, j = code % c;
+        for (int a = 0; a < 4; a++) {
+            int x = i + arr[a][0], y = j + arr[a][1];
+            if (x >= 0 && x < r && y >= 0 && y < c && mat[x][y] == -1) {
+                mat[x][y] = mat[i][j] + 1;
+                queue.offerLast(x * c + y);
+            }
+        }
+    }
+    return mat;
 }
 ```
 
@@ -853,6 +913,26 @@ public int rob(int[] nums) {
 }
 ```
 
+## [322. 零钱兑换 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/coin-change/)<u>从已完成中取值</u>
+
+```java
+public int coinChange(int[] coins, int amount) {
+    int[] dp = new int[amount + 1];
+    Arrays.fill(dp, amount + 1);
+    dp[0] = 0;
+    for (int i = 0; i <= amount; i++) {
+        for (int j = 0; j < coins.length; j++) {
+            if (i >= coins[j]) {
+                dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1);
+            }
+        }
+    }
+    return dp[amount] > amount ? -1 : dp[amount];
+}
+```
+
+
+
 # 回溯
 
 ## [39. 组合总和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/combination-sum/submissions/)<u>选与不选</u>
@@ -944,6 +1024,92 @@ public int searchInsert(int[] nums, int target) {
         }
     }
     return left;
+}
+```
+
+# 哈希表
+
+## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>先比后存</u>
+
+```java
+public int[] twoSum(int[] nums, int target) {
+    HashMap<Integer,Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        if (map.containsKey(target - nums[i])) {
+            return new int[]{map.get(target - nums[i]), i};
+        }
+        map.put(nums[i], i);
+    }
+    return new int[]{};
+}
+```
+
+## [剑指 Offer 03. 数组中重复的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
+
+```java
+public int findRepeatNumber(int[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+        if (nums[i] == i)
+            continue;
+        if (nums[nums[i]] == nums[i])
+            return nums[i];
+        int index = nums[i];
+        nums[i] = nums[index];
+        nums[index] = index;
+        i--;
+    }
+    return -1;
+}
+```
+
+# 滑动窗口
+
+## [3. 无重复字符的最长子串 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/)
+
+```java
+public int lengthOfLongestSubstring(String s) {
+    HashSet<Character> set = new HashSet<>();
+    int left, right;
+    left = right = 0;
+    int ret = 0;
+    while (right < s.length()) {
+        char temp = s.charAt(right);
+        if (set.contains(temp)) {
+            while (s.charAt(left) != temp) {
+                set.remove(s.charAt(left));
+                left++;
+            }
+            left++;
+        }
+        ret = Math.max(ret, right - left + 1);
+        set.add(temp);
+        right++;
+    }   
+    return ret;
+}
+```
+
+## [567. 字符串的排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutation-in-string/)
+
+```java
+public boolean checkInclusion(String s1, String s2) {
+    int n = s1.length(), m = s2.length();
+    if (n > m)
+        return false;
+    int[] arr = new int[26];
+    for (int i = 0; i < n; i++) 
+        ++arr[s1.charAt(i) - 'a'];
+    for (int left = 0, right = 0; right < m; right++) {
+        int x = s2.charAt(right) - 'a';
+        --arr[x];
+        while (arr[x] < 0) {
+            ++arr[s2.charAt(left) - 'a'];
+            ++left;
+        }
+        if (right - left + 1 == n)
+            return true;
+    }
+    return false;
 }
 ```
 
