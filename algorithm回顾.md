@@ -374,7 +374,7 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 }
 ```
 
-## [542. 01 矩阵 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/01-matrix/)<u>蔓延</u>
+## [542. 01 矩阵 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/01-matrix/)<u>识别固定值，越前就越小</u>
 
 ```java
 public int[][] updateMatrix(int[][] mat) {
@@ -1068,24 +1068,18 @@ public int findRepeatNumber(int[] nums) {
 
 ```java
 public int lengthOfLongestSubstring(String s) {
-    HashSet<Character> set = new HashSet<>();
-    int left, right;
-    left = right = 0;
-    int ret = 0;
-    while (right < s.length()) {
-        char temp = s.charAt(right);
-        if (set.contains(temp)) {
-            while (s.charAt(left) != temp) {
-                set.remove(s.charAt(left));
-                left++;
-            }
+    int[] map = new int[128];
+    int max = 0;
+    for (int left = 0, right = 0; right < s.length(); right++) {
+        char rightChar = s.charAt(right);
+        while (map[rightChar] != 0) {
+            map[s.charAt(left)]--;
             left++;
         }
-        ret = Math.max(ret, right - left + 1);
-        set.add(temp);
-        right++;
-    }   
-    return ret;
+        map[rightChar] = 1;
+        max = Math.max(max, right - left + 1);
+    }
+    return max;
 }
 ```
 
