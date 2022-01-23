@@ -189,6 +189,36 @@ public void reverse(int[] nums, int start, int end) {
 }
 ```
 
+## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)数组确定方向顺序
+
+```java
+public int[][] generateMatrix(int n) {
+    int[][] arr = new int[n][n];
+    int r = arr.length, c = arr[0].length;
+    int i = 0, j = 0;
+    int[][] help = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int index = 0, num = 1;
+    while (true) {
+        arr[i][j] = num++;
+        int tempI = i + help[index][0], tempJ = j + help[index][1];
+        if (tempI >=0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
+            i = tempI;
+            j = tempJ;
+        } else {
+            index = (index + 1) % 4;
+            tempI = i + help[index][0];
+            tempJ = j + help[index][1];
+            if (tempI >= 0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
+                i = tempI;
+                j = tempJ;
+            } else
+                break;
+        }
+    }
+    return arr;
+}
+```
+
 # 字符串
 
 ## [387. 字符串中的第一个唯一字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/first-unique-character-in-a-string/)<u>化简</u>
@@ -261,6 +291,39 @@ public ListNode detectCycle(ListNode head) {
         head = head.next;
     }
     return head;
+}
+```
+
+## [剑指 Offer 36. 二叉搜索树与双向链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/)<u>部分展开</u>
+
+```java
+public Node treeToDoublyList(Node root) {
+    if (root == null)
+        return null;
+    ArrayDeque<Node> stack = new ArrayDeque<>();
+    Node max = null;
+    while (root != null) {
+        stack.push(root);
+        root = root.right;
+    }
+    max = stack.peek();
+    Node last = null;
+    while (!stack.isEmpty()) {
+        root = stack.pop();
+        Node temp = root.left;
+        while (temp != null) {
+            stack.push(temp);
+            temp = temp.right;
+        }
+        if (last != null) {
+            root.right = last;
+            last.left = root;
+        }
+        last = root;
+    }
+    max.right = last;
+    last.left = max;
+    return last;
 }
 ```
 
@@ -960,6 +1023,34 @@ private void help(List<List<Integer>> res, int[] array, int target, Stack<Intege
 }
 ```
 
+## [784. 字母大小写全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/letter-case-permutation/)<u>一分为二已完成和未完成</u>
+
+```java
+class Solution {
+    private List<String> res = new ArrayList<>();
+    public List<String> letterCasePermutation(String s) {
+        StringBuilder builder = new StringBuilder(s.toLowerCase());
+        dfs(builder, 0);
+        return res;
+    }
+    private void dfs(StringBuilder s, int index) {
+        if (s.length() == index) {
+            res.add(s.toString());
+            return;
+        }
+        // 小写或数字
+        dfs(s, index + 1);
+        // 大写
+        char q = s.charAt(index);
+        if (q >= 'a' && q <= 'z') {
+            s.setCharAt(index, (char)(q - 32));
+            dfs(s, index + 1);
+            s.setCharAt(index, q);
+        }
+    }
+}
+```
+
 # 单调栈
 
 ## [739. 每日温度 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/daily-temperatures/)<u>找最近</u>
@@ -1104,6 +1195,104 @@ public boolean checkInclusion(String s1, String s2) {
             return true;
     }
     return false;
+}
+```
+
+# 树
+
+## [144. 二叉树的前序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+
+```java
+public List<Integer> preorderTraversal(TreeNode root) {
+    Stack<TreeNode> stack = new Stack<>();
+    List<Integer> list = new ArrayList<>();
+    if (root != null)
+        stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode temp = stack.pop();
+        if (temp.right != null)
+            stack.push(temp.right);
+        if (temp.left != null)
+            stack.push(temp.left);
+        list.add(temp.val);
+    }
+    return list;
+}
+```
+
+## [94. 二叉树的中序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+```java
+public List<Integer> inorderTraversal(TreeNode root) {
+    Stack<TreeNode> stack = new Stack<>();
+    List<Integer> list = new ArrayList<>();
+    while (root != null || !stack.isEmpty()) {
+        while (root != null) {
+            stack.push(root);
+            root = root.left;
+        }
+        root = stack.pop();
+        list.add(root.val);
+        root = root.right;
+    }
+    return list;
+}
+```
+
+## [145. 二叉树的后序遍历 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/submissions/)<u>翻转树前序</u>
+
+```java
+public List<Integer> postorderTraversal(TreeNode root) {
+    Stack<TreeNode> stack = new Stack<>();
+    LinkedList<Integer> list = new LinkedList<>();
+    if (root != null)
+        stack.push(root);
+    while (!stack.isEmpty()) {
+        TreeNode temp = stack.pop();
+        if (temp.left != null)
+            stack.push(temp.left);
+        if (temp.right != null)
+            stack.push(temp.right);
+        list.addFirst(temp.val);
+    }
+    return list;
+}
+```
+
+# 前缀和
+
+## [560. 和为 K 的子数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/subarray-sum-equals-k/)<u>差</u>
+
+```java
+public int subarraySum(int[] nums, int k) {
+    HashMap<Integer, Integer> map = new HashMap<>();
+    int ret = 0, sum = 0;
+    map.put(0, 1);
+    for (int temp : nums) {
+        sum += temp;
+        ret += map.getOrDefault(sum - k, 0);
+        map.put(sum, map.getOrDefault(sum, 0) + 1);
+    }
+    return ret;
+}
+```
+
+## [238. 除自身以外数组的乘积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/product-of-array-except-self/)<u>左右横跳</u>
+
+```java
+public int[] productExceptSelf(int[] nums) {
+    int[] ret = new int[nums.length];
+    int temp = 1;
+    for (int i = 0; i < nums.length; i++) {
+        ret[i] = temp;
+        temp *= nums[i];
+    }
+    temp = 1;
+    for (int i = nums.length - 1; i >= 0; i--) {
+        ret[i] *= temp;
+        temp *= nums[i];
+    }
+    return ret;
 }
 ```
 

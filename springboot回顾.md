@@ -20,7 +20,10 @@
 | @EnableAutoConfiguration  | 开启自动配置                                                 |
 | @ConditionalOnMissingBean | 仅当BeanFactory中不包含指定的bean class或name时条件匹配      |
 | @ConditionalOnBean        | 与@ConditionalOnMissingBean相反                              |
-|                           |                                                              |
+| @JsonIgnore               | 不会进行格式化                                               |
+| @JsonFormat               | 格式化                                                       |
+| @JsonInclude              | 匹配时才格式化                                               |
+| @JsonProperty             | 别名                                                         |
 
 # 配置文件
 
@@ -384,3 +387,382 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport { 
 ```
 
 原因是WebMvcAutoConfiguration类有@ConditionalOnMissingBean(WebMvcConfigurationSupport.class)注解
+
+#### json
+
+- Gson
+- Jackson
+- Json-B
+
+默认Jackson
+
+```java
+@JsonComponent
+class UserJsonCustom {
+    public static class Serializer extends JsonSerializer<User> {
+        @Override
+        public void serialize(User value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        }
+    }
+    public static class Deserializer extends JsonDeserializer<User> {
+        @Override
+        public User deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            return null;
+        }
+    }
+}
+```
+
+```java
+@JsonComponent
+class UserJsonCustom {
+    public static class Serializer extends JsonObjectSerializer {
+        @Override
+        protected void serializeObject(Object value, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+        }
+    }
+    public static class Deserializer extends JsonObjectDeserializer<User> {
+        @Override
+        protected User deserializeObject(JsonParser jsonParser, DeserializationContext context, ObjectCodec codec, JsonNode tree) throws IOException {
+            return null;
+        }
+    }
+}
+```
+
+```java
+public abstract class JsonObjectSerializer<T> extends JsonSerializer<T> { ... }
+public abstract class JsonObjectDeserializer<T> extends JsonDeserializer<T> { ... }
+```
+
+# 国际化
+
+- 添加本地化文件
+
+- 配置messageResource 设置本地化资源
+
+  - 资源放在resource/messages或在配置文件spring.messages.basename=xxx
+
+- 解析请求头中的accept-language或者解析url中的locale
+
+  ```java
+  public enum LocaleResolver {
+      // 配置文件spring.mvc.locale指定语言
+      FIXED,
+      // 请求头获得语言
+      ACCEPT_HEADER
+  }
+  ```
+
+  ```java
+  @ConfigurationProperties("spring.web")
+  public class WebProperties {
+  	private LocaleResolver localeResolver = LocaleResolver.ACCEPT_HEADER;
+  	...
+  }
+  ```
+
+  通过配置文件spring.mvc.locale-resolver=accept_header指定使用类型
+
+  ```java
+  @Bean
+  @ConditionalOnMissingBean
+  @ConditionalOnProperty(prefix = "spring.mvc", name = "locale")
+  public class WebMvcAutoConfiguration {
+  	public LocaleResolver localeResolver() {
+          // 当配置spring.mvc.locale-resolver=fixed
+          if (this.mvcProperties.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) {
+              // 就使用spring.mvc.locale的值
+              return new FixedLocaleResolver(this.mvcProperties.getLocale());
+          }
+          AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+          Locale locale = (this.webProperties.getLocale() != null) ? this.webProperties.getLocale()
+              : this.mvcProperties.getLocale();
+          // spring.mvc.locale作为默认语言
+          localeResolver.setDefaultLocale(locale);
+          return localeResolver;
+      }
+      ...
+  }
+  ```
+
+  ```java
+  public class AcceptHeaderLocaleResolver implements LocaleResolver {
+  	@Override
+  	public Locale resolveLocale(HttpServletRequest request) {
+  		Locale defaultLocale = getDefaultLocale();
+          // 当没有Accept-Language才用默认Locale
+  		if (defaultLocale != null && request.getHeader("Accept-Language") == null) {
+  			return defaultLocale;
+  		}
+  		Locale requestLocale = request.getLocale();
+  		List<Locale> supportedLocales = getSupportedLocales();
+  		if (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) {
+  			return requestLocale;
+  		}
+  		Locale supportedLocale = findSupportedLocale(request, supportedLocales);
+  		if (supportedLocale != null) {
+  			return supportedLocale;
+  		}
+  		return (defaultLocale != null ? defaultLocale : requestLocale);
+  	}
+      ...
+  }
+  ```
+
+- 语言切换
+
+  ```
+  @Configuration
+  public class WebMvcConfig implements WebMvcConfigurer {
+  	@Override
+      public void addInterceptors(InterceptorRegistry registry) {
+          // url语言拦截器
+          registry.addInterceptor(new LocaleChangeInterceptor()).addPathPatterns("/**");
+      }
+  }
+  ```
+
+  ```java
+  public class LocaleChangeInterceptor implements HandlerInterceptor {
+  	@Override
+  	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException {
+          // 获取url中locale的值
+          String newLocale = request.getParameter(getParamName());
+          if (newLocale != null) {
+              if (checkHttpMethod(request.getMethod())) {
+                  LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
+                  if (localeResolver == null) {
+                      throw new IllegalStateException(
+                          "No LocaleResolver found: not in a DispatcherServlet request?");
+                  }
+                  try {
+                      // 将值设置进localeResolver
+                      localeResolver.setLocale(request, response, parseLocaleValue(newLocale));
+                  }
+                  ...
+              }
+          }
+      }
+      ...
+  }
+  ```
+
+  ```java
+  LocaleContextHolder是一个Locale持久器，springmvc底层会将localeResolver设置进去
+  ```
+
+# 统一异常处理
+
+ErrorMvcAutoConfiguration
+
+```java
+public class ErrorMvcAutoConfiguration {
+    
+	@Bean
+	@ConditionalOnMissingBean(value = ErrorAttributes.class, search = SearchStrategy.CURRENT)
+	public DefaultErrorAttributes errorAttributes() { ... }
+    
+    @Bean
+	@ConditionalOnMissingBean(value = ErrorController.class, search = SearchStrategy.CURRENT)
+	public BasicErrorController basicErrorController(ErrorAttributes errorAttributes, ObjectProvider<ErrorViewResolver> errorViewResolvers) { ... }
+    // 解析错误视图
+    @Bean
+    @ConditionalOnBean(DispatcherServlet.class)
+    @ConditionalOnMissingBean(ErrorViewResolver.class)
+    DefaultErrorViewResolver conventionErrorViewResolver() { ... }
+}
+```
+
+ErrorMvcAutoConfiguration包含3个主要Bean，DefaultErrorAttributes、BasicErrorController、DefaultErrorViewResolver
+
+```java
+public class BasicErrorController extends AbstractErrorController {
+    // 网页请求
+	@RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+	public ModelAndView errorHtml(HttpServletRequest request, HttpServletResponse response) {
+        ...
+        // 使用了DefaultErrorViewResolver解析
+        odelAndView modelAndView = resolveErrorView(request, response, status, model);
+        ...
+    }
+    // ajax请求
+    @RequestMapping
+	public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) { ... }
+}
+```
+
+BasicErrorController包含两个映射接口，分别处理网页和ajax请求异常
+
+```java
+public abstract class AbstractErrorController implements ErrorController {
+	protected ModelAndView resolveErrorView(HttpServletRequest request, HttpServletResponse response, HttpStatus status, Map<String, Object> model) {
+        ...
+    	ModelAndView modelAndView = resolver.resolveErrorView(request, status, model);
+        ...
+	}
+}
+```
+
+```java
+/*
+ * For example, an {@code HTTP 404} will search (in the specific order):
+ * <ul>
+ * <li>{@code '/<templates>/error/404.<ext>'}</li>
+ * <li>{@code '/<static>/error/404.html'}</li>
+ * <li>{@code '/<templates>/error/4xx.<ext>'}</li>
+ * <li>{@code '/<static>/error/4xx.html'}</li>
+ * </ul>
+ */
+public class DefaultErrorViewResolver implements ErrorViewResolver, Ordered {
+	@Override
+	public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status, Map<String, Object> model) {
+		ModelAndView modelAndView = resolve(String.valueOf(status.value()), model);
+        ...
+	}
+    
+    private ModelAndView resolve(String viewName, Map<String, Object> model) {
+		String errorViewName = "error/" + viewName;
+        // 在templates里找
+		TemplateAvailabilityProvider provider = this.templateAvailabilityProviders.getProvider(errorViewName,
+				this.applicationContext);
+		if (provider != null) {
+			return new ModelAndView(errorViewName, model);
+		}
+        // 在static里找
+		return resolveResource(errorViewName, model);
+	}
+	...
+}
+```
+
+# Servlet容器
+
+#### Servlet容器配置修改
+
+- 全局配置文件修改
+
+- WebServerFactoryCustomizer修改
+
+  ```java
+  @Component
+  public class CustomizationBean implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
+  
+      @Override
+      public void customize(ConfigurableWebServerFactory server) {
+          server.setPort(8000);
+      }
+  }
+  ```
+
+#### 注册servlet三大容器
+
+servlet、filter、listener
+
+以servlet为例
+
+```java
+@WebServlet(urlPatterns = "/ScanServlet")
+public class MyServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter writer = resp.getWriter();
+        writer.println("hello ScanServlet");
+    }
+}
+@SpringBootApplication
+@ServletComponentScan// 加上才会扫描到
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+```
+
+或
+
+```java
+public class BeanServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter writer = resp.getWriter();
+        writer.println("hello BeanServlet");
+    }
+}
+@Configuration
+public class MyWebMvcConfigurer {
+    @Bean
+    public ServletRegistrationBean myServlet() {
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
+        servletRegistrationBean.setServlet(new BeanServlet());
+        servletRegistrationBean.addUrlMappings("/BeanServlet");
+        return servletRegistrationBean;
+    }
+}
+```
+
+#### 三大容器
+
+tomcat(默认)、jetty、undertow
+
+#### Servlet自动配置
+
+```java
+@Configuration(proxyBeanMethods = false)
+@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+// 依赖任意servlet容器
+@ConditionalOnClass(ServletRequest.class)
+@ConditionalOnWebApplication(type = Type.SERVLET)
+// 启用server.xxx自动注入
+@EnableConfigurationProperties(ServerProperties.class)
+// 让所有WebServerFactoryCustomizer一一调用
+@Import({ ServletWebServerFactoryAutoConfiguration.BeanPostProcessorsRegistrar.class,
+		ServletWebServerFactoryConfiguration.EmbeddedTomcat.class,
+		ServletWebServerFactoryConfiguration.EmbeddedJetty.class,
+		ServletWebServerFactoryConfiguration.EmbeddedUndertow.class })
+public class ServletWebServerFactoryAutoConfiguration {
+    @Bean
+	public ServletWebServerFactoryCustomizer servletWebServerFactoryCustomizer(ServerProperties serverProperties, ObjectProvider<WebListenerRegistrar> webListenerRegistrars) {
+        ...
+	}
+}
+```
+
+```java
+public class ServletWebServerFactoryCustomizer implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory>, Ordered {
+}
+```
+
+WebServerFactoryCustomizer
+
+```java
+public static class BeanPostProcessorsRegistrar implements ImportBeanDefinitionRegistrar, BeanFactoryAware {
+    // 使用registerBeanDefinitions注册Bean
+	@Override
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        if (this.beanFactory == null) {
+            return;
+        }
+        registerSyntheticBeanIfMissing(registry, "webServerFactoryCustomizerBeanPostProcessor",
+                                       WebServerFactoryCustomizerBeanPostProcessor.class,
+                                       WebServerFactoryCustomizerBeanPostProcessor::new);
+        registerSyntheticBeanIfMissing(registry, "errorPageRegistrarBeanPostProcessor",
+                                       ErrorPageRegistrarBeanPostProcessor.class,
+                                       ErrorPageRegistrarBeanPostProcessor::new);
+    }
+}
+```
+
+```java
+public class WebServerFactoryCustomizerBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware {
+    @Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		if (bean instanceof WebServerFactory) {
+			postProcessBeforeInitialization((WebServerFactory) bean);
+		}
+		return bean;
+	}
+}
+```
+
+# spring boot启动原理
