@@ -225,51 +225,51 @@ db.COLLECTION_NAME.aggregate(
         }
      }, {
         $group: { // 计算平均值
-            _id: "$KEY",
+            _id: "$KEY_NAME",
             FIELD_NAME: {
-                $avg: "$likes"
+                $avg: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 获取集合中所有文档对应值的最小值
             _id: "$KEY",
             FIELD_NAME: {
-                $min: "$likes"
+                $min: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 获取集合中所有文档对应值的最大值
-            _id: "KEY",
+            _id: "$KEY_NAME",
             FIELD_NAME: {
-                $max: "$likes"
+                $max: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 在结果文档中插入值到一个数组中
-            _id: "$KEY",
+            _id: "$KEY_NAME",
             FIELD_NAME: {
-                $push: "$url"
+                $push: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 在结果文档中插入值到一个数组中，但不创建副本
-            _id: "$KEY",
+            _id: "$KEY_NAME",
             FIELD_NAME: {
-                $addToSet: "$url"
+                $addToSet: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 根据资源文档的排序获取第一个文档数据
-            _id: "$KEY",
+            _id: "$KEY_NAME",
             FIELD_NAME: {
-                $first: "$url"
+                $first: "$KEY_NAME"
             }
         }
     }, {
         $group: { // 根据资源文档的排序获取最后一个文档数据
-            _id : "$KEY",
+            _id : "$KEY_NAME",
             FIELD_NAME: {
-                $last: "$url"
+                $last: "$KEY_NAME"
             }
         }
     }]
