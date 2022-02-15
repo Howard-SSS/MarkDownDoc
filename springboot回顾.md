@@ -24,6 +24,9 @@
 | @JsonFormat               | 格式化                                                       |
 | @JsonInclude              | 匹配时才格式化                                               |
 | @JsonProperty             | 别名                                                         |
+| @RequestParam             | 请求头参数注入                                               |
+| @PathVariable             | 路径参数注入                                                 |
+| @RequestBody              | 请求体参数注入                                               |
 
 # 配置文件
 
@@ -78,6 +81,10 @@ classpath(resource)根目录 < classpath(resource)根目录config/ < 项目根�
 </dependency>
 ```
 
+File->Setting->Compiler-Build Project automatically
+
+ctrl+shift+alt+/，选择Registry，勾上Compiler automake allow when app running
+
 # 日志
 
 spring boot 默认用的是Logback + slf4j
@@ -124,13 +131,13 @@ slf4j-api
 
 #### slf4j与其他各种日志组件桥接器说明
 
-| jar包名              | 说明                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| slf4j-jdk.jar        | java.util.logging的桥接器                                    |
-| slf4j-log4j12.jar    | log4j1.2版本的桥接器                                         |
-| log4j-slf4j-impl.jar | log4j2的桥接器                                               |
-| logback-classic.jar  | slf4j的原生实现，Logback直接实现了slf4j的接口                |
-| slf4j-jcl.jar        | Jakarta Commons Logging的桥接器，这个桥接器将slf4j所有日志委派给jcl |
+| 依赖名                     | 说明                                                         |
+| -------------------------- | ------------------------------------------------------------ |
+| slf4j-jdk.jar              | java.util.logging的桥接器                                    |
+| slf4j-log4j12.jar          | log4j1.2版本的桥接器                                         |
+| spring-boot-starter-log4j2 | log4j2的桥接器                                               |
+| logback-classic.jar        | slf4j的原生实现，Logback直接实现了slf4j的接口                |
+| slf4j-jcl.jar              | Jakarta Commons Logging的桥接器，这个桥接器将slf4j所有日志委派给jcl |
 
 #### slf4j与其他组件适配器说明
 
@@ -138,6 +145,35 @@ slf4j-api
 | ------------------ | --------------- |
 | jcl-over-slf4j.jar | jcl(门面)适配器 |
 | jul-to-slf4j.jar   | jul(实现)适配器 |
+
+# 测试
+
+MockMVC
+
+```java
+@Test
+void getTest() throws Exception {
+    mockMvc.perform(
+        MockMvcRequestBuilders.get("/g").param("id", "12345")
+    ).andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(MockMvcResultHandlers.print());
+}
+```
+
+```java
+@Test
+void multiTest() throws Exception {
+    File file = new File("C:\\Users\\心里的潇洒情\\Desktop\\0c3c28bfd9fbe87b952ce334fd430ae.jpg");
+    MockMultipartFile mockFile = new MockMultipartFile("file", "jenny.jpg", MediaType.MULTIPART_FORM_DATA_VALUE, new FileInputStream(file));
+    mockMvc.perform(
+        MockMvcRequestBuilders.
+        multipart("/m").
+        file(mockFile).
+        content(MediaType.MULTIPART_FORM_DATA_VALUE)
+    ).andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(MockMvcResultHandlers.print());
+}
+```
 
 # 自动配置
 
@@ -766,3 +802,172 @@ public class WebServerFactoryCustomizerBeanPostProcessor implements BeanPostProc
 ```
 
 # spring boot启动原理
+
+调用SpringApplication.run启动springboot应用
+
+```java
+SpringApplication.run(DemoApplication.class, args);
+```
+
+```java
+public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
+    return new SpringApplication(primarySources).run(args);
+}
+```
+
+**创建SpringApplication对象**
+
+```java
+public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+    this.resourceLoader = resourceLoader;
+    Assert.notNull(primarySources, "PrimarySources must not be null");
+    // 将启动类放入primarySources
+    this.primarySources = new LinkedHashSet<>(Arrays.asList(primarySources));
+    // 根据classpath下的类，推断当前web应用类型(webFlux,servlet)
+    this.webApplicationType = WebApplicationType.deduceFromClasspath();
+    this.bootstrappers = new ArrayList<>(getSpringFactoriesInstances(Bootstrapper.class));
+    // 去spring.factories中去获取所有key为org.springframework.context.ApplicationContextInitializer的值
+    setInitializers((Collection) getSpringFactoriesInstances(ApplicationContextInitializer.class));
+    // 去spring.factories中去获取所有key为org.springframework.context.ApplicationListener的值
+    setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
+    // 根据main方法推算出mainApplicationClass
+    this.mainApplicationClass = deduceMainApplicationClass();
+}
+```
+
+总结：
+
+1. 获取启动类
+2. 获取web应用类型
+3. 读取对外扩展的ApplicationContextInitialier，ApplicationListener
+4. 根据main推算出所在的类
+
+**运行run方法**
+
+```java
+public ConfigurableApplicationContext run(String... args) {
+    // 记录springboot启动耗时
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+    // 它是任何spring上下文的接口，所以可以接受任何ApplicationContext实现
+    DefaultBootstrapContext bootstrapContext = createBootstrapContext();
+    ConfigurableApplicationContext context = null;
+    configureHeadlessProperty();
+    // 去spring.factories中去获取SpringApplicationRunListener的组件，用来发布事件
+    SpringApplicationRunListeners listeners = getRunListeners(args);
+    // 1.发布ApplicationStartingEvent事件
+    listeners.starting(bootstrapContext, this.mainApplicationClass);
+    try {
+        // 根据命令行参数实例化ApplicationArguments
+        ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
+        // 预初始化环境，读取环境变量，读取配置文件信息
+        ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
+        // 忽略实现BeanInfo的Bean
+        configureIgnoreBeanInfo(environment);
+        // 打印Banner横幅
+        Banner printedBanner = printBanner(environment);
+        // 根据webApplicationType创建Spring上下文
+        context = createApplicationContext();
+        context.setApplicationStartup(this.applicationStartup);
+        // 预初始化上下文
+        prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
+        // 加载spring ioc容器，由于是使用
+        refreshContext(context);
+        afterRefresh(context, applicationArguments);
+        stopWatch.stop();
+        if (this.logStartupInfo) {
+            new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), stopWatch);
+        }
+        listeners.started(context);
+        callRunners(context, applicationArguments);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, listeners);
+        throw new IllegalStateException(ex);
+    }
+
+    try {
+        listeners.running(context);
+    }
+    catch (Throwable ex) {
+        handleRunFailure(context, ex, null);
+        throw new IllegalStateException(ex);
+    }
+    return context;
+}
+```
+
+```java
+private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners, DefaultBootstrapContext bootstrapContext, ApplicationArguments applicationArguments) {
+   	// 根据webApplicationType创建环境，创建完就会读取java环境变量和系统环境变量
+   	ConfigurableEnvironment environment = getOrCreateEnvironment();
+   	// 将命令行参数读取到环境变量
+   	configureEnvironment(environment, applicationArguments.getSourceArgs());
+   	// 将@PropertieSource的配置信息放在第一位，因为优先级最低
+   	ConfigurationPropertySources.attach(environment);
+    // 发布了ApplicationEnvironmentPreparedEvent的监听器，读取了全局配置文件
+   	listeners.environmentPrepared(bootstrapContext, environment);
+   	DefaultPropertiesPropertySource.moveToEnd(environment);
+   	configureAdditionalProfiles(environment);
+    // 将所有spring.main开头的配置信息绑定到SpringApplication
+   	bindToSpringApplication(environment);
+   	if (!this.isCustomEnvironment) {
+      	environment = new EnvironmentConverter(getClassLoader()).convertEnvironmentIfNecessary(environment,
+            deduceEnvironmentClass());
+   	}
+    // 更新PropertySources
+   	ConfigurationPropertySources.attach(environment);
+   	return environment;
+}
+```
+
+```java
+private void prepareContext(DefaultBootstrapContext bootstrapContext, ConfigurableApplicationContext context, ConfigurableEnvironment environment, SpringApplicationRunListeners listeners, ApplicationArguments applicationArguments, Banner printedBanner) {
+   context.setEnvironment(environment);
+   postProcessApplicationContext(context);
+    // 拿到之前读取到所有ApplicationContextInitializer的组件，循环调用initialize方法
+   applyInitializers(context);
+    // 发布了ApplicationContextInitializedEvent
+   listeners.contextPrepared(context);
+   bootstrapContext.close(context);
+   if (this.logStartupInfo) {
+      logStartupInfo(context.getParent() == null);
+      logStartupProfileInfo(context);
+   }
+   // 获取当前spring上下文beanFactory(负责创建bean)
+   ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
+   beanFactory.registerSingleton("springApplicationArguments", applicationArguments);
+   if (printedBanner != null) {
+      beanFactory.registerSingleton("springBootBanner", printedBanner);
+   }
+    // 在spring下如果出现两个重名的bean，则后读取到的会覆盖前面的
+    // 在springboot在这里设置了不允许覆盖，当出现2个重名的bean会抛出异常
+   if (beanFactory instanceof DefaultListableBeanFactory) {
+      ((DefaultListableBeanFactory) beanFactory)
+            .setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
+   }
+    // 设置当前所有的bean是否懒加载
+   if (this.lazyInitialization) {
+      context.addBeanFactoryPostProcessor(new LazyInitializationBeanFactoryPostProcessor());
+   }
+   // Load the sources
+   Set<Object> sources = getAllSources();
+   Assert.notEmpty(sources, "Sources must not be empty");
+    // 读取主启动类，因为后续要根据配置类解析配置的所有bean
+   load(context, sources.toArray(new Object[0]));
+    // 发布ApplicationPreparedEvent
+   listeners.contextLoaded(context);
+}
+```
+
+总结：
+
+1. 初始化SpringApplication从spring.factories读取listener ApplicationContextInitializer
+2. 运行run方法
+3. 读取环境变量 配置信息
+4. 创建springApplication上下文：ServletWebServerApplicationContext
+5. 预初始化上下文：读取启动类
+6. 调用refresh加载ioc容器
+   1. 加载所有的自动配置类
+   2. 创建servlet容器
+7. 在这个过程中springboot会调用很多监听器对外进行拓展

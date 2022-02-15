@@ -2,7 +2,7 @@
 
 # 数组
 
-## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>完成下标与检索下标</u>
+## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>前到后</u>
 
 ```java
 public int removeDuplicates(int[] nums) {
@@ -16,7 +16,7 @@ public int removeDuplicates(int[] nums) {
 }
 ```
 
-## [88. 合并两个有序数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-sorted-array/)
+## [88. 合并两个有序数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-sorted-array/)<u>后到前</u>
 
 ```java
 public void merge(int[] nums1, int m, int[] nums2, int n) {
@@ -35,7 +35,7 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 }
 ```
 
-## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)<u>对半消耗</u>
+## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)<u>消耗</u>
 
 ```java
 public int majorityElement(int[] nums) {
@@ -53,7 +53,7 @@ public int majorityElement(int[] nums) {
 }
 ```
 
-## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)<u>异或取值</u>
+## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)<u>异或</u>
 
 ```java
 public int missingNumber(int[] nums) {
@@ -63,24 +63,6 @@ public int missingNumber(int[] nums) {
         ret^=nums[i-1];
     }
     return ret;
-}
-```
-
-## [724. 寻找数组的中心下标 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/find-pivot-index/)
-
-```java
-public int pivotIndex(int[] nums) {
-    int sum = 0;
-    for (int temp : nums) 
-        sum += temp;
-    int temp = 0;
-    for (int i = 0; i < nums.length; i++) {
-        sum -= nums[i];
-        if (sum == temp)
-            return i;
-        temp += nums[i];
-    }
-    return -1;
 }
 ```
 
@@ -98,7 +80,7 @@ public List<Boolean> prefixesDivBy5(int[] nums) {
 }
 ```
 
-## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)
+## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)<u>有序无序</u>
 
 ```java
 public List<List<Integer>> permute(int[] nums) {
@@ -126,7 +108,7 @@ public void swap(int[] nums,int a,int b) {
 }
 ```
 
-## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)
+## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)<u>三指针</u>
 
 ```java
 public void sortColors(int[] nums) {
@@ -189,7 +171,7 @@ public void reverse(int[] nums, int start, int end) {
 }
 ```
 
-## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)数组确定方向顺序
+## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)<u>方向顺序</u>
 
 ```java
 public int[][] generateMatrix(int n) {
@@ -239,7 +221,7 @@ public int firstUniqChar(String s) {
 
 # 链表
 
-## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)<u>总会步长相等</u>
+## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)<u>步长</u>
 
 ```java
 public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -329,16 +311,6 @@ public Node treeToDoublyList(Node root) {
 
 # 深度优先遍历
 
-## [104. 二叉树的最大深度 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
-
-```java
-public int maxDepth(TreeNode root) {
-    if(root == null)
-        return 0;
-    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
-}
-```
-
 ## [543. 二叉树的直径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
 
 ```java
@@ -356,7 +328,7 @@ public int help(TreeNode root) {
 }
 ```
 
-## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>向下抹除广度</u>
+## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>察除</u>
 
 ```java
 public int numIslands(char[][] grid) {
@@ -386,7 +358,7 @@ public void tran(char[][] grid,int i,int j){
 }
 ```
 
-## [695. 岛屿的最大面积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/max-area-of-island/)<u>向上计数广度</u>
+## [695. 岛屿的最大面积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/max-area-of-island/)<u>渗透</u>
 
 ```java
 public int maxAreaOfIsland(int[][] grid) {
@@ -437,7 +409,7 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 }
 ```
 
-## [542. 01 矩阵 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/01-matrix/)<u>识别固定值，越前就越小</u>
+## [542. 01 矩阵 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/01-matrix/)<u>越前就越小</u>
 
 ```java
 public int[][] updateMatrix(int[][] mat) {
@@ -469,6 +441,43 @@ public int[][] updateMatrix(int[][] mat) {
         }
     }
     return mat;
+}
+```
+
+## [117. 填充每个节点的下一个右侧节点指针 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node-ii/)<u>横跳</u>
+
+```java
+public Node connect(Node root) {
+    if (root == null)
+        return null;
+    Node head = root;
+    Node l = null;
+    // 找起始Node
+    while (l == null && head != null) {
+        if (head.left != null) {
+            l = head.left;
+            break;
+        } else if (head.right != null) {
+            l = head.right;
+            break;
+        }
+        head = head.next;
+    }
+    Node nextFloor = l;
+    // 给起始Node.next找Node
+    while (head != null) {
+        if (head.left != null && head.left != l) {
+            l.next = head.left;
+            l = l.next;
+        }
+        if (head.right != null && head.right != l) {
+            l.next = head.right;
+            l = l.next;
+        }
+        head = head.next;
+    }
+    connect(nextFloor);
+    return root;
 }
 ```
 
@@ -512,7 +521,7 @@ public int trailingZeroes(int n) {
 }
 ```
 
-## [231. 2 的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-two/)<u>以位定值</u>
+## [231. 2 的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-two/)<u>1位</u>
 
 ```java
 public boolean isPowerOfTwo(int n) {
@@ -528,7 +537,7 @@ public boolean isPowerOfThree(int n) {
 }
 ```
 
-## [342. 4的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-four/)<u>以为定值</u>
+## [342. 4的幂 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/power-of-four/)<u>1位</u>
 
 ```java
 public boolean isPowerOfFour(int n) {
@@ -536,9 +545,41 @@ public boolean isPowerOfFour(int n) {
 }
 ```
 
+## [43. 字符串相乘 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/multiply-strings/)<u>乘法规则</u>
+
+```java
+public String multiply(String num1, String num2) {
+    if (num1.equals("0") || num2.equals("0"))
+        return "0";
+    char[] left = num1.toCharArray(), right = num2.toCharArray();
+    ArrayList<Integer> list = new ArrayList<>();
+    for (int i = left.length - 1; i >= 0; i--) {
+        for (int j = right.length - 1; j >= 0; j--) {
+            int index = left.length - 1 - i + right.length - 1 - j;
+            int temp = (left[i] - '0') * (right[j] - '0');
+            while (list.size() <= index)
+                list.add(0);
+            list.set(index, list.get(index) + temp);
+        }
+    }
+    int temp = 0;
+    StringBuilder builder = new StringBuilder("");
+    for (int i = 0; i < list.size(); i++) {
+        temp += list.get(i);
+        builder.append(temp % 10);
+        temp /= 10;
+    }
+    while (temp != 0) {
+        builder.append(temp % 10);
+        temp /= 10;
+    }
+    return builder.reverse().toString();
+}
+```
+
 # 位运算
 
-## [191. 位1的个数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-1-bits/submissions/)位与消1
+## [191. 位1的个数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-1-bits/submissions/)消后缀1
 
 ```java
 public int hammingWeight(int n) {
@@ -551,7 +592,7 @@ public int hammingWeight(int n) {
 }
 ```
 
-## [201. 数字范围按位与 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/submissions/)总结代表
+## [201. 数字范围按位与 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/bitwise-and-of-numbers-range/submissions/)
 
 ```java
 public int rangeBitwiseAnd(int left, int right) {
@@ -922,11 +963,9 @@ class MyQueue {
  */
 ```
 
-
-
 # 动态规划
 
-## [55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)
+## [55. 跳跃游戏 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/jump-game/)<u>最远跳</u>
 
 ```java
 public boolean canJump(int[] nums) {
@@ -943,7 +982,7 @@ public boolean canJump(int[] nums) {
 }
 ```
 
-## [121. 买卖股票的最佳时机 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)<u>有小取小，终会遇到大</u>
+## [121. 买卖股票的最佳时机 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)
 
 ```java
 public int maxProfit(int[] prices) {
@@ -956,7 +995,7 @@ public int maxProfit(int[] prices) {
 }
 ```
 
-## [198. 打家劫舍 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/house-robber/)<u>近水楼台先报警</u>
+## [198. 打家劫舍 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/house-robber/)
 
 ```java
 public int rob(int[] nums) {
@@ -976,7 +1015,7 @@ public int rob(int[] nums) {
 }
 ```
 
-## [322. 零钱兑换 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/coin-change/)<u>从已完成中取值</u>
+## [322. 零钱兑换 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/coin-change/)<u>已完成中取值</u>
 
 ```java
 public int coinChange(int[] coins, int amount) {
@@ -994,7 +1033,24 @@ public int coinChange(int[] coins, int amount) {
 }
 ```
 
+## [139. 单词拆分 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/word-break/)<u>记忆</u>
 
+```java
+public boolean wordBreak(String s, List<String> wordDict) {
+    HashSet<String> set = new HashSet<>(wordDict);
+    boolean[] arr = new boolean[s.length() + 1];
+    arr[0] = true;
+    for (int i = 1; i <= s.length(); i++) {
+        for (int j = 0; j < i; j++) {
+            if (arr[j] && set.contains(s.substring(j, i))) {
+                arr[i] = true;
+                break;
+            }
+        }
+    }
+    return arr[s.length()];
+}
+```
 
 # 回溯
 
@@ -1047,6 +1103,32 @@ class Solution {
             dfs(s, index + 1);
             s.setCharAt(index, q);
         }
+    }
+}
+```
+
+## [90. 子集 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/subsets-ii/)
+
+```java
+public List<List<Integer>> subsetsWithDup(int[] nums) {
+    Arrays.sort(nums);
+    List res = new ArrayList<ArrayList<Integer>>();
+    List temp = new ArrayList<Integer>();
+    res.add(temp);
+    dfs(nums, 0, res, temp);
+    return res;
+}
+private void dfs(int[] nums, int index, List res, List temp) {
+    if (index == nums.length)
+        return;
+    for (int i = index; i < nums.length;) {
+        temp.add(nums[i]);
+        res.add(new ArrayList<>(temp));
+        dfs(nums, i + 1, res, temp);
+        temp.remove(temp.size() - 1);
+        int n = nums[i];
+        while (i < nums.length && n == nums[i])
+            i++;
     }
 }
 ```
@@ -1256,6 +1338,55 @@ public List<Integer> postorderTraversal(TreeNode root) {
         list.addFirst(temp.val);
     }
     return list;
+}
+```
+
+## [199. 二叉树的右视图 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-tree-right-side-view/)<u>覆盖</u>
+
+```java
+public List<Integer> rightSideView(TreeNode root) {
+    List<Integer> ret = new ArrayList<>();
+    dfs(root, 0, ret);
+    return ret;
+}
+public void dfs(TreeNode root, int index, List<Integer> list) {
+    if (root == null)
+        return;
+    if (list.size() == index) {
+        list.add(root.val);
+    } else {
+        list.set(index, root.val);
+    }
+    dfs(root.left, index + 1, list);
+    dfs(root.right, index + 1, list);
+}
+```
+
+## [450. 删除二叉搜索树中的节点 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/delete-node-in-a-bst/)<u>代替</u>
+
+```java
+public TreeNode deleteNode(TreeNode root, int key) {
+    if (root == null)
+        return null;
+    if (root.val == key) {
+        TreeNode last = root, now = root.left;
+        if (now == null)
+            return root.right;
+        while (now.right != null) {
+            last = now;
+            now = now.right;
+        }
+        if (root != last) {
+            last.right = deleteNode(now, now.val);
+        }
+        now.right = root.right;
+        if (now != root.left)
+            now.left = root.left;
+        return now;
+    }
+    root.left = deleteNode(root.left, key);
+    root.right = deleteNode(root.right, key);
+    return root;
 }
 ```
 

@@ -47,16 +47,16 @@ equals方法里用的是==比较，但String和Integer重写了equals方法，�
 ```java
 public class Main {
     public static void main(String args[]) {
-        // Thread继承Runnable，实质重写Runnable run方法
+        // 1.Thread继承Runnable，实质重写Runnable run方法
         Thread thread1 = new Thread() {
             @Override
             public void run() {
                 System.out.println("this is first method");
             }
         };
-        // 重写Runnable run方法创建线程
+        // 2.重写Runnable run方法创建线程
         Thread thread2 = new Thread(() -> System.out.println("this is second method"));
-        // FutureTask间接继承Runnable，实质重写Runnable run方法，并实现结束回调
+        // 3.FutureTask间接继承Runnable，实质重写Runnable run方法，并实现结束回调
         FutureTask<String> task = new FutureTask<String>(() -> "third method finish") {
             @Override
             public void run() {
