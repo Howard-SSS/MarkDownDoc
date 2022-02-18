@@ -22,16 +22,6 @@ equals方法里用的是==比较，但String和Integer重写了equals方法，�
 
 **StringBuffer**线程安全，**StringBuilder**非线程安全
 
-## Math
-
-| 静态函数名 | 描述     |
-| ---------- | -------- |
-| ceil       | 向上取整 |
-| floor      | 向下取整 |
-| max        | 最大     |
-| min        | 最小     |
-| round      | 四舍五入 |
-
 ## BigInteger/BigDecimal
 
 | 函数名    | 描述 |
@@ -44,19 +34,20 @@ equals方法里用的是==比较，但String和Integer重写了equals方法，�
 
 ## 线程
 
+1. 重写Thread的run方法
+2. 传入Runnable实例
+3. 重写FutureTask的run方法
+
 ```java
 public class Main {
     public static void main(String args[]) {
-        // 1.Thread继承Runnable，实质重写Runnable run方法
         Thread thread1 = new Thread() {
             @Override
             public void run() {
                 System.out.println("this is first method");
             }
         };
-        // 2.重写Runnable run方法创建线程
         Thread thread2 = new Thread(() -> System.out.println("this is second method"));
-        // 3.FutureTask间接继承Runnable，实质重写Runnable run方法，并实现结束回调
         FutureTask<String> task = new FutureTask<String>(() -> "third method finish") {
             @Override
             public void run() {
@@ -64,18 +55,16 @@ public class Main {
                 System.out.println("this is third method");
             }
         };
-        Thread thread3 = new Thread(task);
-        thread1.start();
-        thread2.start();
-        thread3.start();
-        try {
-            System.out.println(task.get());
-        } catch(InterruptedException | ExecutionException e) { }
     }
 }
 ```
 
-## sleep和wait区别
+```java
+public class Thread implements Runnable {}
+public class FutureTask<V> implements RunnableFuture<V> {}
+```
+
+## slep和wait区别
 
 sleep方法是Thread类的静态方法，不会释放资源
 
@@ -454,33 +443,30 @@ class MergeSort implements SortImpl {
 }
 ```
 
-| 排序算法 | 平均时间复杂度 | 最好情况    | 最坏情况    | 空间复杂度 | 排序方式  | 稳定性 |
-| -------- | -------------- | ----------- | ----------- | ---------- | --------- | ------ |
-| 冒泡排序 | O(n^2^)        | O(n)        | O(n^2^)     | O(1)       | In-place  | 稳定   |
-| 选择排序 | O(n^2^)        | O(n^2^)     | O(n^2^)     | O(1)       | In-place  | 不稳定 |
-| 插入排序 | O(n^2^)        | O(n)        | O(n^2^)     | O(1)       | In-place  | 稳定   |
-| 希尔排序 | O(nlogn)       | O(nlog^2^n) | O(nlog^2^n) | O(1)       | In-place  | 不稳定 |
-| 归并排序 | O(nlogn)       | O(nlogn)    | O(nlogn)    | O(n)       | Out-place | 稳定   |
-| 快速排序 | O(nlogn)       | O(nlogn)    | O(n^2^)     | O(logn)    | In-place  | 不稳定 |
-| 堆排序   | O(nlogn)       | O(nlogn)    | O(nlogn)    | O(1)       | In-place  | 不稳定 |
-| 计数排序 | O(n+k)         | O(n+k)      | O(n+k)      | O(k)       | Out-place | 稳定   |
-| 桶排序   | O(n+k)         | O(n+k)      | O(n^2^)     | O(n+k)     | Out-place | 稳定   |
-| 基数排序 | O(n*k)         | O(n*k)      | O(n*k)      | O(n+k)     | Out-place | 稳定   |
+| 排序算法 | 平均时间复杂度 | 最好情况 | 最坏情况 | 空间复杂度 | 排序方式 | 稳定性 |
+| -------- | -------------- | -------- | -------- | ---------- | -------- | ------ |
+| 冒泡排序 | O(n^2^)        | O(n)     | O(n^2^)  | O(1)       | In-place | 稳定   |
+| 选择排序 | O(n^2^)        | O(n^2^)  | O(n^2^)  | O(1)       | In-place | 不稳定 |
+| 插入排序 | O(n^2^)        | O(n)     | O(n^2^)  | O(1)       | In-place | 稳定   |
+
+| 希尔排序 | O(nlogn) | O(nlog^2^n) | O(nlog^2^n) | O(1)    | In-place  | 不稳定 |
+| -------- | -------- | ----------- | ----------- | ------- | --------- | ------ |
+| 归并排序 | O(nlogn) | O(nlogn)    | O(nlogn)    | O(n)    | Out-place | 稳定   |
+| 快速排序 | O(nlogn) | O(nlogn)    | O(n^2^)     | O(logn) | In-place  | 不稳定 |
+| 堆排序   | O(nlogn) | O(nlogn)    | O(nlogn)    | O(1)    | In-place  | 不稳定 |
+
+| 计数排序 | O(n+k) | O(n+k) | O(n+k)  | O(k)   | Out-place | 稳定 |
+| -------- | ------ | ------ | ------- | ------ | --------- | ---- |
+| 桶排序   | O(n+k) | O(n+k) | O(n^2^) | O(n+k) | Out-place | 稳定 |
+| 基数排序 | O(n*k) | O(n*k) | O(n*k)  | O(n+k) | Out-place | 稳定 |
 
 ## 容器
 
 ```java
 public class Main {
 	public static void main(String args[]) {
-        // 集合
         // 不同步、键无序
         HashSet set = new HashSet<Integer>();
-        set.add("1");//true [1]
-        set.contains("1");// true [1]
-        set.remove("1");// true []
-        set.clear();// []
-        set.isEmpty();// true []
-        
         // 不同步、键有序
         TreeSet set1 = new TreeSet<Integer>();
     }
@@ -492,13 +478,10 @@ public class Main {
 ```java
 public class Main {
 	public static void main(String args[]) {
+        // TreeMap 有序、线程不安全
         // HashTable 线程安全
-        // 线程不安全、无序
+        // 无序、线程不安全
         HashMap map = new HashMap<Integer, Integer>();
-        map.put(1,1);//null [(1,1)]
-        map.get(1);//1 [(1,1)]
-        map.remove(1);//1 []
-        map.size();// 0
     }
 }
 ```
@@ -525,10 +508,6 @@ public class Main {
 	public static void main(String args[]) {
         // 栈、继承Vector
         Stack stack = new Stack<Integer>();
-        stack.push(1);// [1]
-        stack.push(2);// [1, 2]
-        stack.peek();// 2 [1, 2]
-        stack.pop();// 2 [1]
     }
 }
 ```
