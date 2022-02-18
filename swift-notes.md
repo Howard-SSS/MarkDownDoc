@@ -1,10 +1,99 @@
+# 基础数据类型
+
+Int、Double、Float、Bool、String
+
+# 集合类型
+
+Array、Set、Dictionary
+
+# 属性
+
+```swift
+class SomeClass {
+	var width = 1.0 // 存储属性
+    var doubleWidth: Double { // 只读计算属性
+        width * 2
+    }
+    var height = 1.0 { // 属性观察器
+        willSet {
+            // 默认拥有newValue
+        }
+        didSet {
+            // 默认拥有OldValue
+        }
+    }
+}
+```
+
+# 方法
+
+值类型的属性不能在它的实例方法中被修改，但加了`mutating`前缀的方法可以
+
+```swift
+struct Point {
+    var a = 0
+    mutating func edit(x: Int) {
+        a += x
+    }
+}
+```
+
+```swift
+class SomeClass {
+    static func method1() // 静态方法，不能被重写
+    class func method2() // 静态方法，可以被重写
+}
+```
+
+# 异步
+
+```swift
+class SomeClass {
+	func download(url: String) async -> [String] {
+        ...
+    } 
+    func method() {
+		let arr = await download(url: "www.abc.com") // 会被挂起，直到download返回
+    }
+}
+```
+
+# Swift与Objective-C
+
+swift引入了objective-c中没有的一些高阶数据类型(tuples)
+
+swift还引入了可选类型(optional)，可选项的意思有两种：一是变量是存在的，
+    例如等于X，二是变量值根本不存在。Optional类似于Objective-C中指向nil的指针，但是适用于所有的数据类型，而非仅仅局限于类，Optional 相比于Objective-C中nil指针更加安全和简明，并且也是Swift诸多最强大功能的核心。
+
+**混编**
+
+oc调用swift：import “工程名-swift.h” @objc
+
+swift调用oc：桥接文件
+
 # present和push区别
 
-present和dismiss对应,push和pop对应
+```swift
+self.present(vc, animated: true, comlpetion: nil)
+self.dismiss(animated: true, completion: nil)
+```
+
+```swift
+self.navgationController?.pushViewController(vc, animated: true)
+self.navgationController?.popViewController(animated: true)
+```
 
 present只能逐级返回,push能返回上一级,也可及返回到根vc,其他vc
 
 https://www.raywenderlich.com/1000705-model-view-controller-mvc-in-ios-a-modern-approach
+
+# NSArray与NSSet
+
+NSArray内存中存储地址连续；NSSet不连续
+
+NSArray遍历查找；NSSet效率高，使用hash查找
+
+NSArray通过下标访问；NSSet通过anyObject访问
 
 # ViewController生命周期
 
@@ -63,13 +152,16 @@ willRemoveSubview
 
 ##### 区别:
 
-class 是类, 引用类型,可以继承;
-struct 是结构体,值类型, 结构体不可以继承;
-struct在小数据模型传递和拷贝时比 class 要更安全，在多线程和网络请求时保证数据不被修改;
+|                                          | class    | struct | enum   |
+| ---------------------------------------- | -------- | ------ | ------ |
+| **类型**                                 | 引用类型 | 值类型 | 值类型 |
+| **继承**                                 | 可以     | 不可以 | 不可以 |
+| **静态方法/方法/静态变量/当作协议/拓展** | 可以     | 可以   | 可以   |
+| **变量**                                 | 可以     | 可以   | 不可以 |
 
 # defer使用场景
 
-defer 语句块中的代码, 会在当前作用域结束前调用, 常用场景如异常退出后, 关闭数据库连接,如果有多个 defer, 那么后加入的先执行
+defer 语句块中的代码, 会在当前作用域结束前调用, 常用场景如异常退出后, 关闭数据库连接；有多个 defer, 那么后加入的先执行；嵌套defer先执行外层，后执行内层
 
 # String与NSString的关系与区别
 
@@ -121,14 +213,6 @@ closure()
 
 总结: 当声明闭包的时候，捕获列表会创建一份car的copy,所以被捕获到的值是不会改变的，即使你改变car的值。
  如果你去掉闭包中的捕获列表，编译器会使用引用代替copy,在这种情况下，当闭包被调用时，变量的值是可以改变的.
-
-# Swift调用OC
-
-创建Swift-Bridge-Objective-C.h
-
-OC 用<u>#import "XXX.h"</u>导入
-
-swift 用<u>import XXX</u>导入
 
 # 存储方式
 
