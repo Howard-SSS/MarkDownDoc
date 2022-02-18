@@ -118,6 +118,7 @@ publish CHANNLE_NAME TEST // 向频道发送消息
 multi // 开始事务
 set name howard // 命令入队
 exec // 执行事务
+discard // 取消事务
 ```
 
 # GEO(3.2)
@@ -125,7 +126,7 @@ exec // 执行事务
 ```java
 geoadd KEY_NAME LONGITUDE LATITUDE MEMBER [KEY_NAME LONGITUDE LATITUDE MEMBER] // 添加位置坐标
 geopos KEY_NAME MEMBER // 获取位置坐标
-geolist KEY_NAME MEMBER MEMBER [m(默认)|km|ft|mi] // 计算两个位置距离
-georadius KEY_NAME LONGITUDE LATITUDE RADIUS m|km|ft|mi [withdist|withcoord|withhash|count|asc|desc]
+geodist KEY_NAME MEMBER MEMBER [m(默认)|km|ft|mi] // 计算两个位置距离
+georadius KEY_NAME LONGITUDE LATITUDE RADIUS m|km|ft|mi [withdist|withcoord|withhash|count|asc|desc] // 根据给定地理位置坐标获取指定范围内的地理位置集合
 ```
 

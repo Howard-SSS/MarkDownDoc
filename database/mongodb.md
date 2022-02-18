@@ -8,6 +8,7 @@
 use COLLECTION_NAME // 切换数据库，不存在则创建
 db // 查看当前数据库
 show dbs // 查看所有数据库
+show collections // 查看当前数据库所有集合
 db.system.users.find().pretty() // 查看用户
 db.createUser({user:"NAME", pwd:"PASSWORD", roles:[{role:"OPTION", db: "COLLECTION_NAME"}]})
 ```
