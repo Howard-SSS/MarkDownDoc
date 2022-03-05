@@ -1,6 +1,6 @@
 # 基础数据类型
 
-Int、Double、Float、Bool、String
+Int、Double、Float、Bool、**String**
 
 # 集合类型
 
@@ -58,6 +58,87 @@ class SomeClass {
 }
 ```
 
+# UITableView委托
+
+```swift
+numberOfRowsInSection -> Int
+cellForRowAt -> UITableViewCell
+numberOfSection -> Int
+didSelectRowAt
+didDeselectRowAt
+```
+
+# UICollectionView委托
+
+```swift
+numberOfSections -> Int
+numberOfItemsInSection -> Int
+cellForItemAt -> UICollectionViewCell 
+```
+
+# 线程
+
+**NSThread**
+
+需要管理线程的生命周期和线程同步
+
+```swift
+// 1.定义执行内容并执行
+Thread.detachNewThread {} 
+// 2.实例方法创建线程
+let thread = Thread(target: self, selector: #selector(action), object: nil)
+子线程调用exit停止子线程
+主线程调用cancel标记子线程可以停止
+```
+
+**NSOperation**
+
+不需关心线程管理和数据同步
+
+```swift
+// 定义执行内容
+var operation: NSOperation = NSBlockOperation {}
+// 定义完成回调
+opearation.completionBlock {}
+var queue: NSOperationQueue = NSOperationQueue()
+queue.addOperation(operation)
+```
+
+**Grand Central Dispath**
+
+```swift
+// 同步执行
+DispatchQueue.main.sync {}
+// 异步执行
+DispatchQueue.main.async {}
+```
+
+```swift
+主队列+同步任务-死锁
+主队列+异步任务-依次执行
+串行队列+同步任务-依次执行
+串行队列+异步任务-开启一个新线程
+并发队列+同步任务-依次执行
+并发队列+异步任务-开启多个线程
+```
+
+# 锁
+
+```swift
+objc_sync_enter
+objc_sync_exit
+```
+
+```swift
+let condition = NSCondition()
+condition.lock() // 加锁
+condition.unlock() // 解锁
+condition.wait() // 等待，释放锁
+condition.signal() // 唤醒
+```
+
+![img](https://p1-jj.byteimg.com/tos-cn-i-t2oaga2asx/gold-user-assets/2018/3/7/161ff105c75a5a12~tplv-t2oaga2asx-watermark.awebp)
+
 # Swift与Objective-C
 
 swift引入了objective-c中没有的一些高阶数据类型(tuples)
@@ -95,64 +176,11 @@ NSArray遍历查找；NSSet效率高，使用hash查找
 
 NSArray通过下标访问；NSSet通过anyObject访问
 
-# ViewController生命周期
 
-initWithCoder(类初始化)
-
-init(对象初始化)
-
-loadView
-
-viewDidLoad
-
-viewWillAppear
-
-viewWillLayoutSubviews
-
-viewDidLayoutSubviews
-
-viewDidAppear
-
-viewWillDisappear
-
-viewDidDisappear
-
-# View生命周期
-
-init
-
-didAddSubview
-
-willMoveToSuperview
-
-DidMoveToSuperview
-
-willMoveToWindow
-
-didMoveToWindow
-
-layoutSubviews
-
-drawRect
-
-removeFromSuperview
-
-dealloc
-
-willRemoveSubview
 
 # class、struct、enum区别
 
-##### 相同点:
-
-都可以定义属性和方法;
-下标语法访问值;
-初始化器;
-支持扩展、协议
-
-##### 区别:
-
-|                                          | class    | struct | enum   |
+| 区别                                     | class    | struct | enum   |
 | ---------------------------------------- | -------- | ------ | ------ |
 | **类型**                                 | 引用类型 | 值类型 | 值类型 |
 | **继承**                                 | 可以     | 不可以 | 不可以 |
@@ -168,9 +196,9 @@ defer 语句块中的代码, 会在当前作用域结束前调用, 常用场景�
 1.能够相互转换
 2.String是值类型, NSString是引用类型.
 
-# try?和try!是什么意思
+# Optional
 
-这两个都用于处理可抛出异常的函数, 使用这两个关键字可以不用写 do catch.
+`try?`和`try!`这两个都用于处理可抛出异常的函数, 使用这两个关键字可以不用写 do catch.
 
 ##### 区别
 
@@ -216,9 +244,23 @@ closure()
 
 # 存储方式
 
-- NSUserDefaults
+- preference
+
+  使用`NSUserDefaults`存储在沙盒的`Library/Preferences`中
+
 - plist
+
+  xml方式储存在沙盒的`Documents`中
+
+- NSKeyedArchiver(归档)
+
 - SQLite3
+
+  使用C的函数对数据库进行操作，可控性强，能够跨平台
+
+- CoreData
+
+  是对SQLite的封装
 
 # 应用沙盒
 
@@ -265,3 +307,34 @@ closure()
 ## 消息机制
 
 使用观察者模式
+
+## WKWebView
+
+性能、稳定性、功能方面提升，内存占用变少
+
+```java
+WKNavigationDelegate
+didStartProvisionalNavigation // 页面开始加载
+didCommitNavgation // 内容开始返回
+didFinishNavigation // 页面加载完成
+didFailProvisionalNavigation // 页面加载失败
+didReceiveServerRedirectForProvisionalNavgation // 接收到服务器跳转请求
+decidePolicyForNavigationAction // 发送请求之前决定是否跳转
+```
+
+## View的drawRect
+
+drawRect中所调用的重绘功能是基于Quartz 2D实现的
+
+调用drawRect的方法
+
+- 调用sizeThatFits后
+- 设置contentMode为UIViewContentModeRedraw，每次设置或更改frame时自动调用
+- 调用setNeedsDisplay
+
+## CAShapeLayer和drawRect
+
+（1）两种自定义控件样式的方法各有优缺点，CAShapeLayer配合贝赛尔曲线使用时，绘图形状更灵活，而drawRect只是一个方法而已，在其中更适合绘制大量有规律的通用的图形；
+ （2）CALayer的属性变化默认会有动画，drawRect绘图没有动画；
+ （3）CALayer绘制图形是实时的，drawRect多次重绘需要手动调用setNeedsLayout；
+ （4）性能方面，CAShapeLayer使用了硬件加速，绘制同一图形会比用Core Graphics快很多，CAShapeLayer属于CoreAnimation框架，动画渲染直接提交给手机GPU，不消耗内，而Core Graphics会消耗大量的CPU资源。
