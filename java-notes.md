@@ -122,7 +122,7 @@ public class Main {
 
 CAS（compare-and-swap）由硬件实现
 
-主要三个参数：V(要更新的变量)，E(预期的变量)，N(新值)
+主要三个参数：V(将要赋予的变量)，E(预期的变量)，N(更改前的变量)
 
 当V和E相等时，才将N替换V
 
@@ -149,6 +149,12 @@ CAS（compare-and-swap）由硬件实现
 #### ReentrantReadWriteLock（读写锁）
 
 读-读不阻塞、写-读阻塞
+
+```
+ReentrantLock
+```
+
+
 
 ## 反射
 
@@ -712,3 +718,21 @@ class Client {
 NIO（同步非阻塞）
 
 AIO（异步非阻塞）java
+
+## JVM
+
+$\frac{年轻代}{老年代}=\frac{1}{2}$
+
+**年轻代**
+
+默认值是堆的1/15
+
+触发gc叫`minor gc`，采用复制算法；每一次清除存活下来的对象年龄增长1，当年龄到达15时，会被移到老年代；如果老年代的连续空间小于新生代对象的总大小，会触发`full gc`，保证新生代顺利进入老年代
+
+![img](https://img2020.cnblogs.com/blog/1534147/202003/1534147-20200327124539659-2034680216.png)
+
+**老年代**
+
+触发gc叫`major gc`也叫`full gc`，包含年轻代gc；采用标记清除算法
+
+![img](https://upload-images.jianshu.io/upload_images/14359229-b8474ef0f97235e9.png?imageMogr2/auto-orient/strip|imageView2/2/w/958/format/webp)
