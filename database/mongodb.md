@@ -1,8 +1,14 @@
+# mongodb是什么
+
+可拓展、面相文档的非关系数据库，C++语言编写，支持bson格式存储数据，支持丰富的查询语言
+
 # 数据模型
 
 **非规范化数据模型（嵌入式数据模型）**
 
 **规范化数据模型**
+
+# 基本
 
 ```java
 use COLLECTION_NAME // 切换数据库，不存在则创建
@@ -42,8 +48,6 @@ db.COLLECTION_NAME.insert(document) // 集合中插入文档, 若主键存在会
 ```java
 db.COLLECTION_NAME.replaceOne(document) // 集合中插入文档,若主键存在会替换内容
 ```
-
-
 
 # 查询
 
@@ -401,7 +405,79 @@ db.COLLECTION_NAME.find(KEY: {$regex: REGEX})
 
 # GridFS
 
-存储16MB的文件
+chunks存储文件的二进制数据，files存储文件的元数据；这两个集合放在名为fs的buket中。
+
+存储时会将文件分割多个`chunk`，每个`chunk`大小为256KB，将多个`chunk`存储在`fs.chunks`中，文件信息存储在`fs.files`唯一一份文档中。
+
+读取时在`fs.files`中找到对应文档获取`_id`，再根据`_id`在`js.chunks`中查找相关文档，根据`n`字段顺序读取文档的`data`字段数据
+
+```java
+@Configuration
+public class MongoConfig {
+
+    @Value("${spring.data.mongodb.host}")
+    private String host;
+
+    @Value("${spring.data.mongodb.port}")
+    private Integer port;
+
+    @Value("${spring.data.mongodb.database}")
+    private String database;
+
+    @Bean
+    public GridFSBucket getgridFSBucket(MongoClient mongoClient) {
+        MongoDatabase mongoDatabase = mongoClient.getDatabase(database);
+        GridFSBucket gridFSBucket = GridFSBuckets.create(mongoDatabase);
+        return gridFSBucket;
+    }
+}
+```
+
+```java
+@Service
+@Slf4j
+public class MongoServiceImpl implements MongoService {
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    @Autowired
+    GridFsTemplate gridFsTemplate;
+
+    @Autowired
+    GridFSBucket gridFSBucket;
+
+    public int increaseId() {
+        Query query = new Query(Criteria.where("name").is("user"));
+        Update update = new Update();
+        update.inc("num", 1);
+        IdItem idItem = mongoTemplate.findAndModify(query, update, IdItem.class, "increase");
+        return idItem.getNum();
+    }
+
+    @Override
+    public String saveFile(InputStream inputStream, String filename, String contentType) {
+        ObjectId id = gridFsTemplate.store(inputStream, filename, contentType);
+        return id.toString();
+    }
+
+    public BufferedImage getImage(String id) {
+        Query query = new Query(Criteria.where("_id").is(id));
+        GridFSFile gridFSFile = gridFsTemplate.findOne(query);
+        GridFSDownloadStream in = gridFSBucket.openDownloadStream(gridFSFile.getId());
+        GridFsResource resource = new GridFsResource(gridFSFile, in);
+        try {
+            InputStream inputStream = resource.getInputStream();
+            return ImageIO.read(inputStream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return null;
+        } finally {
+            in.close();
+        }
+    }
+}
+```
 
 **mapReduce**
 
