@@ -312,14 +312,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 ```java
 public class MyInterceptor implements HandlerInterceptor {
-    // 处理前调用（先添加先调用）
+    // 进入controller前执行（先添加先调用）
     @Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception { return true; }
     @Override
-    // 处理后调用（后添加先调用）
+    // 进入controller后执行（后添加先调用）
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {}
     @Override
-    // 处理后回调（后添加先调用）
+    // 整个请求结束执行（后添加先调用）
     default void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {}
 }
 ```
