@@ -69,7 +69,7 @@ class LuojiKeyboard implements Keyboard {}
 
 使用场景：
 
-- 生产的产品有复杂的内部结构
+- 生产的产品有复杂的内部结构，包含多个成员属性
 - 相同的创建过程可以创建不同的产品
 
 ```java
@@ -211,7 +211,7 @@ class Border extends ImageDecorator {
 
 使用场景：
 
-- 
+- 接口不符合系统的需求，需要更改
 
 **类适配器**
 
@@ -615,6 +615,7 @@ abstract class AbstractIntList {
     protected ArrayList<Integer> list = new ArrayList<>();
     public void addInt(int val) { list.add(val); }
     public void removeInt(int val) { list.remove(val); }
+    public abstract IntIterator iterator(); 
 }
 // 具体聚合类
 class IntList extends AbstractIntList{
