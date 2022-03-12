@@ -1,6 +1,21 @@
 [toc]
 
-# 数组
+# 双指针
+
+## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>找差</u>
+
+```java
+public int[] twoSum(int[] nums, int target) {
+    HashMap<Integer,Integer> map = new HashMap<>();
+    for (int i = 0; i < nums.length; i++) {
+        if (map.containsKey(target - nums[i])) {
+            return new int[]{map.get(target - nums[i]), i};
+        }
+        map.put(nums[i], i);
+    }
+    return new int[]{};
+}
+```
 
 ## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>前到后</u>
 
@@ -32,51 +47,6 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
         }
         index--;
     }
-}
-```
-
-## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)<u>消耗</u>
-
-```java
-public int majorityElement(int[] nums) {
-    int res = nums[0], num = 1;
-    for (int i = 1; i < nums.length; i++) {
-        if (num == 0) {
-            res = nums[i];
-            num = 1;
-        } else if (res == nums[i]) 
-            num++;
-        else if (res != nums[i])
-            num--;
-    }
-    return res;
-}
-```
-
-## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)<u>异或</u>
-
-```java
-public int missingNumber(int[] nums) {
-    int ret=0;
-    for (int i=1; i <= nums.length; i++) {
-        ret^=i;
-        ret^=nums[i-1];
-    }
-    return ret;
-}
-```
-
-## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/submissions/)<u>求余缩减</u>
-
-```java
-public List<Boolean> prefixesDivBy5(int[] nums) {
-    List res = new ArrayList<Boolean>();
-    int temp = 0;
-    for (int num : nums) {
-        temp = (temp * 2 + num) % 5;
-        res.add(temp == 0);
-    }
-    return res;
 }
 ```
 
@@ -131,6 +101,63 @@ public void swap(int nums[], int a, int b) {
 }
 ```
 
+## [206. 反转链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reverse-linked-list/submissions/)
+
+```java
+public ListNode reverseList(ListNode head) {
+    if(head == null)
+        return null;
+    ListNode myHead = head;
+    ListNode p = head.next;
+    head.next = null;
+    while(p != null) {
+        ListNode last = p;
+        p = p.next;
+        last.next = myHead;
+        myHead = last;
+    }
+    return myHead;
+}
+```
+
+## 
+
+# 消耗
+
+## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)
+
+```java
+public int majorityElement(int[] nums) {
+    int res = nums[0], num = 1;
+    for (int i = 1; i < nums.length; i++) {
+        if (num == 0) {
+            res = nums[i];
+            num = 1;
+        } else if (res == nums[i]) 
+            num++;
+        else if (res != nums[i])
+            num--;
+    }
+    return res;
+}
+```
+
+# 求余
+
+## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/submissions/)
+
+```java
+public List<Boolean> prefixesDivBy5(int[] nums) {
+    List res = new ArrayList<Boolean>();
+    int temp = 0;
+    for (int num : nums) {
+        temp = (temp * 2 + num) % 5;
+        res.add(temp == 0);
+    }
+    return res;
+}
+```
+
 ## [134. 加油站 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/gas-station/submissions/)<u>奇技淫巧</u>
 
 ```java
@@ -171,39 +198,9 @@ public void reverse(int[] nums, int start, int end) {
 }
 ```
 
-## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)<u>方向顺序</u>
+# 搜索
 
-```java
-public int[][] generateMatrix(int n) {
-    int[][] arr = new int[n][n];
-    int r = arr.length, c = arr[0].length;
-    int i = 0, j = 0;
-    int[][] help = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    int index = 0, num = 1;
-    while (true) {
-        arr[i][j] = num++;
-        int tempI = i + help[index][0], tempJ = j + help[index][1];
-        if (tempI >=0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
-            i = tempI;
-            j = tempJ;
-        } else {
-            index = (index + 1) % 4;
-            tempI = i + help[index][0];
-            tempJ = j + help[index][1];
-            if (tempI >= 0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
-                i = tempI;
-                j = tempJ;
-            } else
-                break;
-        }
-    }
-    return arr;
-}
-```
-
-# 字符串
-
-## [387. 字符串中的第一个唯一字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/first-unique-character-in-a-string/)<u>化简</u>
+## [387. 字符串中的第一个唯一字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/first-unique-character-in-a-string/)
 
 ```java
 public int firstUniqChar(String s) {
@@ -219,9 +216,9 @@ public int firstUniqChar(String s) {
 }
 ```
 
-# 链表
+# 步长
 
-## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)<u>步长</u>
+## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)
 
 ```java
 public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -236,26 +233,9 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 }
 ```
 
-## [206. 反转链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/reverse-linked-list/submissions/)
+# 快慢指针
 
-```java
-public ListNode reverseList(ListNode head) {
-    if(head == null)
-        return null;
-    ListNode myHead = head;
-    ListNode p = head.next;
-    head.next = null;
-    while(p != null) {
-        ListNode last = p;
-        p = p.next;
-        last.next = myHead;
-        myHead = last;
-    }
-    return myHead;
-}
-```
-
-## [142. 环形链表 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/linked-list-cycle-ii/)<u>一步与两步</u>
+## [142. 环形链表 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 
 ```java
 public ListNode detectCycle(ListNode head) {
@@ -276,7 +256,9 @@ public ListNode detectCycle(ListNode head) {
 }
 ```
 
-## [剑指 Offer 36. 二叉搜索树与双向链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/)<u>部分展开</u>
+# 部分展开
+
+## [剑指 Offer 36. 二叉搜索树与双向链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/)
 
 ```java
 public Node treeToDoublyList(Node root) {
@@ -310,6 +292,36 @@ public Node treeToDoublyList(Node root) {
 ```
 
 # 深度优先遍历
+
+## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)<u>方向顺序</u>
+
+```java
+public int[][] generateMatrix(int n) {
+    int[][] arr = new int[n][n];
+    int r = arr.length, c = arr[0].length;
+    int i = 0, j = 0;
+    int[][] help = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int index = 0, num = 1;
+    while (true) {
+        arr[i][j] = num++;
+        int tempI = i + help[index][0], tempJ = j + help[index][1];
+        if (tempI >=0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
+            i = tempI;
+            j = tempJ;
+        } else {
+            index = (index + 1) % 4;
+            tempI = i + help[index][0];
+            tempJ = j + help[index][1];
+            if (tempI >= 0 && tempI < r && tempJ >= 0 && tempJ < c && arr[tempI][tempJ] == 0) {
+                i = tempI;
+                j = tempJ;
+            } else
+                break;
+        }
+    }
+    return arr;
+}
+```
 
 ## [543. 二叉树的直径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
 
@@ -579,6 +591,19 @@ public String multiply(String num1, String num2) {
 
 # 位运算
 
+## [268. 丢失的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/missing-number/)
+
+```java
+public int missingNumber(int[] nums) {
+    int ret=0;
+    for (int i = 1; i <= nums.length; i++) {
+        ret ^= i;
+        ret ^= nums[i - 1];
+    }
+    return ret;
+}
+```
+
 ## [191. 位1的个数 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-1-bits/submissions/)消后缀1
 
 ```java
@@ -615,8 +640,6 @@ public int maximum(int a, int b) {
     return (int)(((q + p) + Math.abs(q - p)) / 2);
 }
 ```
-
-
 
 # 设计
 
@@ -1201,21 +1224,6 @@ public int searchInsert(int[] nums, int target) {
 ```
 
 # 哈希表
-
-## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>先比后存</u>
-
-```java
-public int[] twoSum(int[] nums, int target) {
-    HashMap<Integer,Integer> map = new HashMap<>();
-    for (int i = 0; i < nums.length; i++) {
-        if (map.containsKey(target - nums[i])) {
-            return new int[]{map.get(target - nums[i]), i};
-        }
-        map.put(nums[i], i);
-    }
-    return new int[]{};
-}
-```
 
 ## [剑指 Offer 03. 数组中重复的数字 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/shu-zu-zhong-zhong-fu-de-shu-zi-lcof/)
 
