@@ -1,3 +1,11 @@
+# AOP
+
+面相切面编程，也是面向方法编程，通过预编译方式和运行期动态代理的方式实现不修改源代码的情况下给程序动态统一添加功能的技术
+
+# IOC
+
+通过控制反转，对象在被创建的时候，由一个调控系统内所有对象的外界实体，将其所依赖的对象的引用传递给它
+
 # 注解
 
 | 名字                      | 描述                                                         |
@@ -971,3 +979,9 @@ private void prepareContext(DefaultBootstrapContext bootstrapContext, Configurab
    1. 加载所有的自动配置类
    2. 创建servlet容器
 7. 在这个过程中springboot会调用很多监听器对外进行拓展
+
+# Spring MVC和Spring Boot
+
+Spring MVC提供了web开发工具，但配置复杂，是基于Spring的一个MVC框架
+
+Spring Boot遵循约定大于配置，提供了默认配置，是基于Spring的一套快速开发整合包
