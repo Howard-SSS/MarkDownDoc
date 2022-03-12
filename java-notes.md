@@ -1,8 +1,39 @@
-## 基本数据类型
+# 基本数据类型
 
-byte/boolean/char/short/int/float/long/double
+|          | byte | boolean | char | short | int  | float | long | double |
+| -------- | ---- | ------- | ---- | ----- | ---- | ----- | ---- | ------ |
+| 字节大小 | 1    | 1       | 2    | 2     | 4    | 4     | 8    | 8      |
 
-## 封装/继承/多态
+# 访问级别
+
+private：类内
+
+package-level（default）：包内
+
+protected：包内、包外继承
+
+public：任意
+
+# 运算符优先级
+
+| 优先级 | 运算符               | 综合性     |
+| ------ | -------------------- | ---------- |
+| 1      | () [] {}             | **左到右** |
+| 2      | ! + - ~ ++ --        | 右到左     |
+| 3      | * / %                | **左到右** |
+| 4      | + -                  | **左到右** |
+| 5      | << >> >>>            | **左到右** |
+| 6      | < <= > >= instanceof | **左到右** |
+| 7      | == !=                | **左到右** |
+| 8      | &                    | **左到右** |
+| 9      | ^                    | **左到右** |
+| 10     | \|                   | **左到右** |
+| 11     | &&                   | **左到右** |
+| 12     | \|\|                 | **左到右** |
+| 13     | ?:                   | 右到左     |
+| 14     | = += -= ...          | 右到左     |
+
+# 封装/继承/多态
 
 封装，即隐藏对象的属性和实现细节，仅对外公开接口，控制在程序中属性的读和修改的访问级别
 
@@ -10,19 +41,47 @@ byte/boolean/char/short/int/float/long/double
 
 多态，就是指一个类实例的相同方法在不同情形有不同表现形式
 
-## ==和equals
+# ==和equals
 
-==对于基本类型比较的是值，对于引用类型比较的是引用是否相同
+==：对于基本类型比较的是值，对于引用类型比较的是引用
 
-equals方法里用的是==比较，但String和Integer重写了equals方法，比较的是值
+equals：里用的是==比较，但String和Integer重写了equals方法，比较的是值
 
-## StringBuffer和StringBuilder
+# Integer
 
-它们都继承**AbstractStringBuilder**，**AbstractStringBuilder**使用字符数组保存字符串，是可变类
+```
+Integer a = 128
+调用valueOf方法，会判断IntegerCache是否存在此对象，没有则创建
+```
 
-**StringBuffer**线程安全，**StringBuilder**非线程安全
+# String StringBuffer StringBuilder
 
-## BigInteger/BigDecimal
+`StringBuffer`和`StringBuilder`它们都继承`AbstractStringBuilder`，`AbstractStringBuilder`使用字符数组保存字符串，是可变类；`String`用final修饰，是不可变类
+
+`String`使用`private final`不可变使得线程安全；`StringBuilder`使用`synchronized`使得线程安全；`StringBuilder`非线程安全
+
+运行速度上快到慢：`StringBuilder`>`StringBuffer`>`String`
+
+# Comparable和Comparator
+
+Comparable可作为一个类的内部排序实现，将代码嵌入自身
+
+```java
+public interface Comparable<T> {
+	public int compareTo(T o);
+}
+```
+
+Comparator将比较实现与比较对象分隔，可用于Arrays.sort、Collections.sort
+
+```java
+public interface Comparator<T> {
+    int compare(T o1, T o2);
+    boolean equals(Object obj);
+}
+```
+
+# BigInteger/BigDecimal
 
 | 函数名    | 描述 |
 | --------- | ---- |
@@ -32,7 +91,7 @@ equals方法里用的是==比较，但String和Integer重写了equals方法，�
 | divide    | 除   |
 | compareTo | 比较 |
 
-## 线程
+# 线程
 
 1. 重写Thread的run方法
 2. 传入Runnable实例
@@ -64,13 +123,13 @@ public class Thread implements Runnable {}
 public class FutureTask<V> implements RunnableFuture<V> {}
 ```
 
-## slep和wait区别
+# sleep和wait区别
 
 sleep方法是Thread类的静态方法，不会释放资源
 
 wait方法是Object类的方法，会释放资源，synchronize环境中调用
 
-## 线程池
+# 线程池
 
 ```java
 public class Main {
@@ -112,7 +171,7 @@ public class Main {
 | newSingleThreadExecutor | 1            | 1                 | 0             | LinkedBlockingQueue                |
 | newScheduledThreadPool  | corePoolSize | Integer.MAX_VALUE | 0             | DelayedWorkQueue(有界)             |
 
-## 锁
+# 锁
 
 #### 偏向锁
 
@@ -150,18 +209,13 @@ CAS（compare-and-swap）由硬件实现
 
 读-读不阻塞、写-读阻塞
 
-```
-ReentrantLock
-```
 
 
-
-## 反射
+# 反射
 
 　　Java反射就是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；并且能改变它的属性
 
 ```java
-package com.company;
 public class Main {
     public static void main(String args[]) {
         try {
@@ -190,7 +244,7 @@ class Contact {
 }
 ```
 
-## 序列化
+# 序列化
 
 简单说就是为了保存在内存中的各种对象的状态（也就是实例变量，不是方法），并且可以把保存的对象状态再读出来
 
@@ -221,7 +275,7 @@ class Person implements Serializable {
 }
 ```
 
-## 浅克隆/深克隆
+# 浅克隆/深克隆
 
 浅克隆就是对象是新的，基本数据类型使用新的，但引用类型是旧的
 
@@ -338,7 +392,7 @@ class Car implements Cloneable {
 
 [ API ](https://www.matools.com/api/java8)
 
-## 排序
+# 排序
 
 ```java
 public class Main {
@@ -466,83 +520,64 @@ class MergeSort implements SortImpl {
 | 桶排序   | O(n+k) | O(n+k) | O(n^2^) | O(n+k) | Out-place | 稳定 |
 | 基数排序 | O(n*k) | O(n*k) | O(n*k)  | O(n+k) | Out-place | 稳定 |
 
-## 容器
+# 映射表
 
 ```java
-public class Main {
-	public static void main(String args[]) {
-        // 不同步、键无序
-        HashSet set = new HashSet<Integer>();
-        // 不同步、键有序
-        TreeSet set1 = new TreeSet<Integer>();
-    }
-}
-```
-
-- HashSet底层由HashMap实现，HashSet的值存放于HashMap的key上，HashMap的value统一为PRESENT
-
-```java
-public class Main {
-	public static void main(String args[]) {
-        // TreeMap 有序、线程不安全
-        // HashTable 线程安全
-        // 无序、线程不安全
-        HashMap map = new HashMap<Integer, Integer>();
-    }
-}
+HashMap // 线程不安全，键无序，数组+链表实现
+TreeMap // 线程不安全，键有序，红黑树实现
+HashTable // 线程安全，键无序，数组+链表实现
 ```
 
 HashMap是数组与链表的结合体，当我们往Hashmap中put元素时,首先根据key的hashcode重新计算hash值,根绝hash值得到这个元素在数组中的位置(下标),如果该数组在该位置上已经存放了其他元素,那么在这个位置上的元素将以链表的形式存放,新加入的放在链头,最先加入的放入链尾.如果数组中该位置没有元素,就直接将该元素放到数组的该位置上
 
-## 线性表
+**同步容器**
+
+- Collections.synchronizedMap(new HashMap<>());
+
+- ConcurrentHashMap
+
+  默认被细分为16个段，每一个段都是一个细粒度的HashMap，通过`put`方法，会根据hashcode获得在哪一个段，对该段加锁，实现线程安全，同样`size`会对每一个段加锁，等于对整个ConcurrentHashMap加锁，在求大小总和
+
+- ConcurrentSkipListMap
+
+# 集合
 
 ```java
-public class Main {
-	public static void main(String args[]) {
-        // 数组实现、线程不安全、容量不够会复制到新的存储空间
-        ArrayList list1 = new ArrayList<Integer>();
-        // 数组实现、线程安全、容量不够会复制到新的存储空间
-        Vector list2 = new Vector<Integer>();
-        // 链表实现、线程不安全
-        LinkedList list3 = new LinkedList<Integer>();
-    }
-}
+HashSet // 线程不安全，键无序
+TreeSet // 线程不安全，键有序
 ```
+
+HashSet底层由HashMap实现，HashSet的值存放于HashMap的key上，HashMap的value统一为PRESENT
+
+**同步容器**
+
+- Collections.synchronizedSet(new HashSet<>());
+- CopyOnWriteArraySet
+- ConcurrentSkipListSet-线程安全的TreeSet
+
+# 线性表
 
 ```java
-public class Main {
-	public static void main(String args[]) {
-        // 栈、继承Vector
-        Stack stack = new Stack<Integer>();
-    }
-}
+ArrayList // 线程不安全，数组实现，容量不够会复制到新的存储空间
+Vector // 线程安全，数组实现，容量不够会复制到新的存储空间
+LinkedList // 线程不安全，链表实现
 ```
 
-## 同步容器
+**同步容器**
 
-```java
-List<String> list = Collections.synchronizedList(new ArrayList<>());
+- Collections.synchronizedList(new ArrayList<>());
 
-Map<Integer, String> map = Collections.synchronizedMap(new HashMap<>());
+- CopyOnWriteArrayList
 
-Set<String> set = Collections.synchronizedSet(new HashSet<>());
-```
+  写时在拷贝的数组上操作，完成后，拷贝数组替换旧数组，适用读多写少场景，读操作并不能马上看到写结果
 
-**CopyOnWriteArrayList**
+- ConcurrentLinkedQueue
+- ConcurrentLinkedDeque
+- ArrayBlockingQueue
+- LinkedBlockingQueue
+- LinkedBlockingDeque
 
-写时在拷贝的数组上操作，完成后，拷贝数组替换旧数组，适用读多写少场景，读操作并不能马上看到写结果
-
-**ConcurrentHashMap**
-
-默认被细分为16个段，每一个段都是一个细粒度的HashMap，通过put(K key,V value)，会根据hashcode获得在哪一个段，对该段加锁，实现线程安全，同样size()会对每一个段加锁，等于对整个ConcurrentHashMap加锁，在求大小总和
-
-**CopyOnWriteArraySet**
-
-与CopyOnWriteArrayList类似
-
-**队列先放着**
-
-## GC
+# GC
 
 JVM把内存中所有对象之间引用关系看作一张图，通过一组名为“GC Root”的对象作为初始点，从这些点开始向下搜索，搜索所走过的路径称为引用链
 
@@ -564,7 +599,7 @@ GC Root
 - 复制算法(可用大小缩为一半)
 - 压缩算法(需要局部对象移动)
 
-## 日志
+# 日志
 
 级别
 
@@ -574,7 +609,15 @@ GC Root
 - warn
 - error
 
-## 1.8
+# 事件模型
+
+三个要素
+
+- 事件源：发生的场所
+- 事件：发生的事情
+- 事件监听器：事件处理
+
+# 1.8
 
 [github-java8讲解译文](https://github.com/weiwosuoai/java8_guide)
 
@@ -645,13 +688,13 @@ public class Main {
 
 ##### 注解
 
-## java值传递
+# java值传递
 
 参数是基本类型，实际传递基本类型字面量的副本
 
 参数是对象，实际传递的是原始对象的副本地址(副本保存原始对象地址)
 
-## BIO、NIO、AIO
+# BIO、NIO、AIO
 
 BIO（同步阻塞）
 
@@ -719,20 +762,30 @@ NIO（同步非阻塞）
 
 AIO（异步非阻塞）java
 
-## JVM
+# JVM
+
+## 堆内存
 
 $\frac{年轻代}{老年代}=\frac{1}{2}$
 
 **年轻代**
 
-默认值是堆的1/15
+分成三部分Eden空间、From Survivor空间、To Survivor空间，默认大小8：1：1
 
-触发gc叫`minor gc`，采用复制算法；每一次清除存活下来的对象年龄增长1，当年龄到达15时，会被移到老年代；如果老年代的连续空间小于新生代对象的总大小，会触发`full gc`，保证新生代顺利进入老年代
+触发gc叫`minor gc`，采用`复制算法`；每一次清除存活下来的对象年龄增长1，当年龄到达15时，会被移到老年代；如果老年代的连续空间小于新生代对象的总大小，会触发`full gc`，保证新生代顺利进入老年代
 
 ![img](https://img2020.cnblogs.com/blog/1534147/202003/1534147-20200327124539659-2034680216.png)
 
 **老年代**
 
-触发gc叫`major gc`也叫`full gc`，包含年轻代gc；采用标记清除算法
+触发gc叫`major gc`也叫`full gc`，包含年轻代gc；采用标记`清除算法`
 
 ![img](https://upload-images.jianshu.io/upload_images/14359229-b8474ef0f97235e9.png?imageMogr2/auto-orient/strip|imageView2/2/w/958/format/webp)
+
+## 方法区
+
+存储虚拟机加载的类信息、常量、静态变量
+
+## 虚拟机栈
+
+创建线程会创建虚拟机栈
