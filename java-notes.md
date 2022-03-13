@@ -41,6 +41,14 @@ public：任意
 
 多态，就是指一个类实例的相同方法在不同情形有不同表现形式
 
+# finally
+
+finally总是在try块中最后运行
+
+对于try或catch里返回值类型，返回前会将结果保存，finally修改值不会印象返回结果；
+
+对于try或catch里返回引用类型，返回前会将引用保存，finally修改引用内容会印象返回结果；
+
 # ==和equals
 
 ==：对于基本类型比较的是值，对于引用类型比较的是引用
@@ -121,6 +129,17 @@ public class Main {
 ```java
 public class Thread implements Runnable {}
 public class FutureTask<V> implements RunnableFuture<V> {}
+public interface RunnableFuture<V> extends Runnable, Future<V> {}
+```
+
+## Thread
+
+```java
+interrupt // 设置中断标志
+interrupted // 清除中断标志
+isInterrupted // 是否中断
+yield // 让出cpu，从运行态变为就绪态，重新竞争cpu，可能会重新获得cpu
+join // 线程a调用线程b.join，b先执行完，a再执行
 ```
 
 # sleep和wait区别
