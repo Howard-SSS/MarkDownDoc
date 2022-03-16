@@ -34,9 +34,9 @@ mv [
 cp # 复制
 # 删除
 rm [
-	-f 忽略不存在文件
 	-i 询问删除
 	-r 递归
+	-f 忽略不存在文件
 ]
 ```
 
@@ -83,7 +83,7 @@ tar [
     f 指定包名
     z 压缩或解压缩.tar.gz
     j 压缩或解压缩.tar.bz2
-] 文件或目录
+] FILE_OR_DIRECTORY
 ```
 
 ```java
@@ -102,7 +102,7 @@ zip [
     
     t 测试有无损坏
     v 显示过程
-] 压缩包名 文件或目录
+] 压缩包名 FILE_OR_DIRECTORY
     
 ```
 
@@ -132,9 +132,9 @@ grep [
 ```shell
 sed [
 	-n 不自动打印
-	-e SCRIPT 添加SCRIPT到脚本中
+	-i 直接编辑内容
 	-f FILE 从FILE读入脚本
-	-i 直接编辑
+	-e SCRIPT 添加SCRIPT到脚本中
 ] SCRIPT FILENAME
 ```
 
@@ -284,7 +284,7 @@ wc [
 	-l 统计行数，默认
 	-w 统计字数，默认
     -c 统计字节数，默认
-]
+] FILE
 输出结果：行数 字数 字节数 文件名
 ```
 
@@ -354,6 +354,30 @@ ps [
 	x 显示没有控制终端的进程
 	-l 详细信息
 	-e 显示所有进程
+	-o 自定义输出格式 [
+		pid 进程id,
+		ppid 父进程id,
+		%mem 进程使用RAM比例，
+		%cpu 进程占用CPU比例，
+		cmd 进程名字，
+		comm 命令名字
+	]
+	--sort=-%cpu 基于cpu使用率排序
+]
+```
+
+查看CPU占用高的进程
+
+`ps -eo pid,ppid,%mem,%cpu,comm --sort=-%cpu | head -n 1
+
+# top
+
+提供了linux系统运行中的进程的动态实时视图，按CPU占用进行排序
+
+```shell
+top [
+	-p 仅查看指定ID进程
+	-b 使用批处理模式输出
 ]
 ```
 
