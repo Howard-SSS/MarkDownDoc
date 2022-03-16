@@ -2,7 +2,11 @@
 
 # 双指针
 
-## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)<u>找差</u>
+## [1. 两数之和 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/two-sum/)
+
+以target-num[i]为键访问值
+
+若是值存在，说明匹配；若是值不存在说明暂时不匹配
 
 ```java
 public int[] twoSum(int[] nums, int target) {
@@ -17,7 +21,11 @@ public int[] twoSum(int[] nums, int target) {
 }
 ```
 
-## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)<u>前到后</u>
+## [26. 删除有序数组中的重复项 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-array/)
+
+有序数组里判断num[i]与num[i-1]是否相等
+
+若不相等说明值还未重复，可以赋值；若相等说明值重复出现，则跳过
 
 ```java
 public int removeDuplicates(int[] nums) {
@@ -31,7 +39,7 @@ public int removeDuplicates(int[] nums) {
 }
 ```
 
-## [88. 合并两个有序数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-sorted-array/)<u>后到前</u>
+## [88. 合并两个有序数组 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/merge-sorted-array/)
 
 ```java
 public void merge(int[] nums1, int m, int[] nums2, int n) {
@@ -50,7 +58,9 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 }
 ```
 
-## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)<u>有序无序</u>
+## [46. 全排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutations/)
+
+将数组划分为以归类和未归类，
 
 ```java
 public List<List<Integer>> permute(int[] nums) {
@@ -78,7 +88,15 @@ public void swap(int[] nums,int a,int b) {
 }
 ```
 
-## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)<u>三指针</u>
+## [75. 颜色分类 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/sort-colors/submissions/)
+
+定义`left`下标为0序列的结束位置，左侧均为0；定义`right`下标为2序列的开始，右侧均为2
+
+下标`i`遍历`nums`：
+
+每当`nums[i]`为2，`nums[i]`与`nums[right]`交换，交换后，`nums[i]`值未知待下次判断；
+
+每当`nums[i]`为0，`nums[i]`与`nums[left]`交换，交换后，`nums[i]`值为1，跳过；
 
 ```java
 public void sortColors(int[] nums) {
@@ -120,11 +138,11 @@ public ListNode reverseList(ListNode head) {
 }
 ```
 
-## 
-
-# 消耗
+# 计数
 
 ## [169. 多数元素 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/majority-element/)
+
+一个数的出现次数大于数组长度的一半，若是相互抵消，则最后出现的就是该数
 
 ```java
 public int majorityElement(int[] nums) {
@@ -144,7 +162,13 @@ public int majorityElement(int[] nums) {
 
 # 求余
 
-## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/submissions/)
+## [1018. 可被 5 整除的二进制前缀 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/binary-prefix-divisible-by-5/)
+
+a=bc+d
+
+10a+e=10(bc+d)+e
+
+=10bc+10d+e=10bc+?bc+d^,^
 
 ```java
 public List<Boolean> prefixesDivBy5(int[] nums) {
@@ -202,6 +226,12 @@ public void reverse(int[] nums, int start, int end) {
 
 ## [387. 字符串中的第一个唯一字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/first-unique-character-in-a-string/)
 
+根据字母找最前和最后的下标：
+
+若下标相等，说明是唯一的，找出最小的下标；
+
+若下标不相等，说明不是唯一的；
+
 ```java
 public int firstUniqChar(String s) {
     int min = Integer.MAX_VALUE;
@@ -218,7 +248,11 @@ public int firstUniqChar(String s) {
 
 # 步长
 
-## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/submissions/)
+## [160. 相交链表 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/intersection-of-two-linked-lists/)
+
+假设e是链表a和链表b的公共链表，链表a为q+e，链表b为p+e
+
+使链表a变为q+e+p+e，链表b变为p+e+q+e，它们均需要走q+e+p次才到达e
 
 ```java
 public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -293,7 +327,9 @@ public Node treeToDoublyList(Node root) {
 
 # 深度优先遍历
 
-## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)<u>方向顺序</u>
+## [59. 螺旋矩阵 II - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/spiral-matrix-ii/)
+
+确定方向，每当遇到该方向下不能再赋值，就更换方向
 
 ```java
 public int[][] generateMatrix(int n) {
@@ -323,24 +359,11 @@ public int[][] generateMatrix(int n) {
 }
 ```
 
-## [543. 二叉树的直径 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)
 
-```java
-int max = 0;
-public int diameterOfBinaryTree(TreeNode root) {
-    help(root);
-    return max;
-}
-public int help(TreeNode root) {
-    if (root == null) 
-        return 0;
-    int left = help(root.left), right = help(root.right);
-    max = Math.max(max, left + right);
-    return Math.max(left, right) + 1;
-}
-```
+`i,j`遍历`grid`，每当`grid[i][j]=='1'`：
 
-## [200. 岛屿数量 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/number-of-islands/)<u>察除</u>
+就从该处深度遍历将岛屿填埋，并计数加一；
 
 ```java
 public int numIslands(char[][] grid) {
@@ -370,7 +393,11 @@ public void tran(char[][] grid,int i,int j){
 }
 ```
 
-## [695. 岛屿的最大面积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/max-area-of-island/)<u>渗透</u>
+## [695. 岛屿的最大面积 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/max-area-of-island/)
+
+`i,j`遍历`grid`，每当判断到`grid[i][j]`为1：
+
+就从该处统计四周有多少个1+1，依次类推；
 
 ```java
 public int maxAreaOfIsland(int[][] grid) {
