@@ -1280,38 +1280,35 @@ public int lengthOfLongestSubstring(String s) {
     int max = 0;
     for (int left = 0, right = 0; right < s.length(); right++) {
         char rightChar = s.charAt(right);
-        while (map[rightChar] != 0) {
+        map[rightChar] += 1;
+        while (map[rightChar] == 2) {
             map[s.charAt(left)]--;
             left++;
         }
-        map[rightChar] = 1;
         max = Math.max(max, right - left + 1);
     }
     return max;
 }
 ```
 
-## [567. 字符串的排列 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/permutation-in-string/)
+## [424. 替换后的最长重复字符 - 力扣（LeetCode） (leetcode-cn.com)](https://leetcode-cn.com/problems/longest-repeating-character-replacement/)
 
 ```java
-public boolean checkInclusion(String s1, String s2) {
-    int n = s1.length(), m = s2.length();
-    if (n > m)
-        return false;
+public int characterReplacement(String s, int k) {
     int[] arr = new int[26];
-    for (int i = 0; i < n; i++) 
-        ++arr[s1.charAt(i) - 'a'];
-    for (int left = 0, right = 0; right < m; right++) {
-        int x = s2.charAt(right) - 'a';
-        --arr[x];
-        while (arr[x] < 0) {
-            ++arr[s2.charAt(left) - 'a'];
-            ++left;
+    int maxCount = 0;
+    int ret = 0;
+    for (int left = 0, right = 0; right < s.length(); ) {
+        arr[s.charAt(right) - 'A']++;
+        maxCount = Math.max(maxCount, arr[s.charAt(right) - 'A']);
+        right++;
+        if (right - left > maxCount + k) {
+            arr[s.charAt(left) - 'A']--;
+            left++;
         }
-        if (right - left + 1 == n)
-            return true;
+        ret = Math.max(ret, right - left);
     }
-    return false;
+    return ret;
 }
 ```
 
