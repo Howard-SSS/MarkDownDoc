@@ -4,6 +4,25 @@
 
 日志级别默认 notice(debug\verbose\notice\warning\)
 
+# 使用场景
+
+- 缓存
+- 数据共享分布式
+- 分布式锁
+- 全局ID
+- 计数器
+- 限流
+- 位统计
+- 购物车
+- 用户消息时间线timeline
+- [消息队列](https://cloud.tencent.com/product/cmq?from=10680)
+- 抽奖
+- 点赞、签到、打卡
+- 商品标签
+- 商品筛选
+- 用户关注、推荐模型
+- 排行榜
+
 # 特点
 
 客户端单线程多IO(网络连接请求)
