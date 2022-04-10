@@ -65,6 +65,12 @@ bit、binary、varbinary、tinyblob、blob、mediumeblob、longblob
 
 存储于内存
 
+# S锁 X锁
+
+S锁：share lock，事务对数据加上S锁，其他事务只可以加S锁，S锁只可读取数据
+
+X锁：exclusive lock，事务对数据加上X锁，其他事务不能加锁，X锁可以读取和修改数据
+
 # 数据库
 
 ```java
@@ -390,12 +396,9 @@ create INDEX_NAME on TABLE_NAME (FIELD_NAME [length] [asc | desc])
   不能并发执行。防止脏读、不可重复读、幻读
 
 ```mysql
-#开启一个事务
-begin 
-#事务回滚
-rollback
-#事务确认
-commit
+begin #开启一个事务
+rollback #事务回滚
+commit #事务确认
 ```
 
 # 日志
